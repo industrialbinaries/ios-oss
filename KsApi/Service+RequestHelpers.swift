@@ -22,6 +22,21 @@ extension Service {
       }
   }
 
+  private func decodeModel<M: Swift.Decodable>(_ json: Data) ->
+    SignalProducer<M, ErrorEnvelope> {
+      return SignalProducer(value: json)
+        .map(decode)
+        .flatMap(.concat) { (decoded: Result<M, Error>)  -> SignalProducer<M, ErrorEnvelope> in
+        switch decoded {
+        case let .success(value):
+          return .init(value: value)
+        case let .failure(error):
+          print("Swift decoding model \(M.self) error: \(error)")
+          return .init(error: .couldNotDecodeJSON(error))
+        }
+      }
+  }
+
   private func decodeModels<M: Argo.Decodable>(_ json: Any)
     -> SignalProducer<[M], ErrorEnvelope> where M == M.DecodedType {
     return SignalProducer(value: json)
@@ -121,6 +136,24 @@ extension Service {
     .flatMap(self.decodeModel)
   }
 
+  func request<M: Swift.Decodable>(route: Route)
+    -> SignalProducer<M, ErrorEnvelope> {
+
+      let properties = route.requestProperties
+
+      guard let URL = URL(string: properties.path, relativeTo: self.serverConfig.apiBaseUrl as URL) else {
+        fatalError(
+          "URL(string: \(properties.path), relativeToURL: \(self.serverConfig.apiBaseUrl)) == nil"
+        )
+      }
+
+      return Service.session.rac_dataResponse(
+        preparedRequest(forURL: URL, method: properties.method, query: properties.query),
+        uploading: properties.file.map { ($1, $0.rawValue) }
+      )
+      .flatMap(self.decodeModel)
+  }
+
   func request<M: Argo.Decodable>(_ route: Route)
     -> SignalProducer<[M], ErrorEnvelope> where M == M.DecodedType {
     let properties = route.requestProperties
@@ -151,3 +184,14 @@ extension Service {
     .flatMap(self.decodeModel)
   }
 }
+
+func decode<T>(_ data: Data) -> Result<T, Error> where T: Swift.Decodable {
+  do {
+    let value = try JSONDecoder()
+      .decode(T.self, from: data)
+    return .success(value)
+  } catch {
+    return .failure(error)
+  }
+}
+
