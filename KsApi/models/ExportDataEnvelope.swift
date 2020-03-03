@@ -1,6 +1,3 @@
-import Argo
-import Curry
-import Runes
 import Foundation
 
 public struct ExportDataEnvelope {
@@ -15,17 +12,6 @@ public struct ExportDataEnvelope {
     case expired
   }
 }
-
-extension ExportDataEnvelope: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<ExportDataEnvelope> {
-    return curry(ExportDataEnvelope.init)
-      <^> json <|? "expires_at"
-      <*> json <| "state"
-      <*> json <|? "data_url"
-  }
-}
-
-extension ExportDataEnvelope.State: Argo.Decodable {}
 
 extension ExportDataEnvelope: Swift.Decodable {
   enum CodingKeys: String, CodingKey {
