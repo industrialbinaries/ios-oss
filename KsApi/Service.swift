@@ -160,7 +160,7 @@ public struct Service: ServiceType {
 
   public func exportDataState()
     -> SignalProducer<ExportDataEnvelope, ErrorEnvelope> {
-    return request(.exportDataState)
+      return request(route: .exportDataState)
   }
 
   public func previewUrl(forDraft draft: UpdateDraft) -> URL? {
