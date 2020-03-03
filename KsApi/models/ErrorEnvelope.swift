@@ -92,6 +92,16 @@ public struct ErrorEnvelope {
     )
   }
 
+  static func couldNotDecodeJSON(_ error: Error) -> ErrorEnvelope {
+    return ErrorEnvelope(
+      errorMessages: ["Swift decoding error: \(error.localizedDescription)"],
+      ksrCode: .DecodingJSONFailed,
+      httpCode: 400, // TODO: 🤔 I am not sure it should be 400 http code when parsing failed
+      exception: nil,
+      facebookUser: nil
+    )
+  }
+
   /**
    A error that the pagination URL is invalid.
 
