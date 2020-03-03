@@ -7,6 +7,7 @@ import ReactiveSwift
 extension Service {
   private static let session = URLSession(configuration: .default)
 
+  @available(*, deprecated, message: "Parse your data with Swift.Decodable `func decodeModel(_ json:)`")
   private func decodeModel<M: Argo.Decodable>(_ json: Any) ->
     SignalProducer<M, ErrorEnvelope> where M == M.DecodedType {
     return SignalProducer(value: json)
@@ -109,6 +110,7 @@ extension Service {
     }
   }
 
+  @available(*, deprecated, message: "Parse your data with Swift.Decodable `func requestPagination(url:)`")
   func requestPagination<M: Argo.Decodable>(_ paginationUrl: String)
     -> SignalProducer<M, ErrorEnvelope> where M == M.DecodedType {
     guard let paginationUrl = URL(string: paginationUrl) else {
@@ -129,6 +131,7 @@ extension Service {
         .flatMap(self.decodeModel)
   }
 
+  @available(*, deprecated, message: "Parse your data with Swift.Decodable `func request(route:)`")
   func request<M: Argo.Decodable>(_ route: Route)
     -> SignalProducer<M, ErrorEnvelope> where M == M.DecodedType {
     let properties = route.requestProperties
