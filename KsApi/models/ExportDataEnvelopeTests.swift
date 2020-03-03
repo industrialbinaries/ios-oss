@@ -9,9 +9,9 @@ final class ExportDataEnvelopeTests: XCTestCase {
       "data_url": "url"
     ]
 
-    let exportDateEnvelope = ExportDataEnvelope
-      .decodeJSONDictionary(json)
-      .value!
+    let exportDateEnvelope = try! ExportDataEnvelope
+      .decodeJSON(json)
+      .get()
 
     XCTAssertEqual(exportDateEnvelope.expiresAt, "today")
     XCTAssertEqual(exportDateEnvelope.state, .queued)
@@ -23,9 +23,9 @@ final class ExportDataEnvelopeTests: XCTestCase {
       "state": "completed"
     ]
 
-    let exportDateEnvelope = ExportDataEnvelope
-      .decodeJSONDictionary(json)
-      .value!
+    let exportDateEnvelope = try! ExportDataEnvelope
+      .decodeJSON(json)
+      .get()
 
     XCTAssertEqual(exportDateEnvelope.state, .completed)
     XCTAssertNil(exportDateEnvelope.dataUrl)
