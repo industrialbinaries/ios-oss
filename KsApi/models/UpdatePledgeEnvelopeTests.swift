@@ -19,9 +19,11 @@ final class UpdatePledgeEnvelopeTests: XCTestCase {
     XCTAssertNotNil(decoded.error)
   }
 
-  func testDecodingWithBadStatusData() {
-    let decoded = UpdatePledgeEnvelope.decodeJSONDictionary(["status": "bad data"])
-    XCTAssertNil(decoded.error)
-    XCTAssertEqual(0, decoded.value?.status)
+  func testDecodingWithNewCheckoutUrl() throws {
+    let decoded = UpdatePledgeEnvelope
+      .decodeJSONDictionary(["status": "400", "new_checkout_url": "new" ])
+      XCTAssertNil(decoded.error)
+      XCTAssertEqual(400, decoded.status)
+      XCTAssertEqual("new", decoded.newCheckoutUrl)
   }
 }
