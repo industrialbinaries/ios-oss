@@ -134,7 +134,7 @@ public struct Service: ServiceType {
     tappedReward: Bool
   ) -> SignalProducer<CreatePledgeEnvelope, ErrorEnvelope> {
     return request(
-      .createPledge(
+      route: .createPledge(
         project: project,
         amount: amount,
         reward: reward,
