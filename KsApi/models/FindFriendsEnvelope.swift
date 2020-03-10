@@ -1,6 +1,4 @@
-import Argo
-import Curry
-import Runes
+import Foundation
 
 public struct FindFriendsEnvelope {
   public let contactsImported: Bool
@@ -16,25 +14,27 @@ public struct FindFriendsEnvelope {
   }
 }
 
-extension FindFriendsEnvelope: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<FindFriendsEnvelope> {
-    return curry(FindFriendsEnvelope.init)
-      <^> json <| "contacts_imported"
-      <*> json <| "urls"
-      <*> (json <|| "users" <|> .success([]))
+// MARK: - Swift decodable
+
+extension FindFriendsEnvelope: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case urls, users
+    case contactsImported = "contacts_imported"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    urls = try container.decode(.urls)
+    users = container.decodeArray(.users)
+    contactsImported = try container.decode(.contactsImported)
   }
 }
 
-extension FindFriendsEnvelope.UrlsEnvelope: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<FindFriendsEnvelope.UrlsEnvelope> {
-    return curry(FindFriendsEnvelope.UrlsEnvelope.init)
-      <^> json <| "api"
-  }
-}
+extension FindFriendsEnvelope.UrlsEnvelope: Swift.Decodable {}
 
-extension FindFriendsEnvelope.UrlsEnvelope.ApiEnvelope: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<FindFriendsEnvelope.UrlsEnvelope.ApiEnvelope> {
-    return curry(FindFriendsEnvelope.UrlsEnvelope.ApiEnvelope.init)
-      <^> json <|? "more_users"
+extension FindFriendsEnvelope.UrlsEnvelope.ApiEnvelope: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case moreUsers = "more_users"
   }
 }

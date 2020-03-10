@@ -2,7 +2,7 @@
 import XCTest
 
 final class FindFriendsEnvelopeTests: XCTestCase {
-  func testJsonDecoding() {
+  func testJsonDecoding() throws {
     let json: [String: Any] = [
       "contacts_imported": true,
       "urls": [
@@ -54,32 +54,31 @@ final class FindFriendsEnvelopeTests: XCTestCase {
       ]
     ]
 
-    let friends = FindFriendsEnvelope.decodeJSONDictionary(json)
-    let users = friends.value?.users ?? []
+    let friends = try FindFriendsEnvelope.decodeJSON(json).get()
+    let users = friends.users
 
-    XCTAssertEqual(true, friends.value?.contactsImported)
+    XCTAssertEqual(true, friends.contactsImported)
     XCTAssertEqual(
       "http://api.dev/v1/users/self/friends/find?count=10",
-      friends.value?.urls.api.moreUsers
+      friends.urls.api.moreUsers
     )
     XCTAssertEqual(false, users[0].isFriend)
     XCTAssertEqual(true, users[1].isFriend)
   }
 
-  func testJsonDecoding_MissingData() {
+  func testJsonDecoding_MissingData() throws {
     let json: [String: Any] = [
       "contacts_imported": true,
       "urls": [
-        "api": [
-        ]
+        "api": [:]
       ],
       "users": [
       ]
     ]
 
-    let friends = FindFriendsEnvelope.decodeJSONDictionary(json)
+    let friends = try FindFriendsEnvelope.decodeJSON(json).get()
 
-    XCTAssertNil(friends.value?.urls.api.moreUsers)
-    XCTAssertEqual([], friends.value?.users ?? [])
+    XCTAssertNil(friends.urls.api.moreUsers)
+    XCTAssertEqual([], friends.users)
   }
 }
