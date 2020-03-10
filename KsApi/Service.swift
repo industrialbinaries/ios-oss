@@ -68,7 +68,7 @@ public struct Service: ServiceType {
 
   public func addImage(file fileURL: URL, toDraft draft: UpdateDraft)
     -> SignalProducer<UpdateDraft.Image, ErrorEnvelope> {
-    return request(Route.addImage(fileUrl: fileURL, toDraft: draft))
+    return request(route: Route.addImage(fileUrl: fileURL, toDraft: draft))
   }
 
   public func addNewCreditCard(input: CreatePaymentSourceInput)
@@ -78,7 +78,7 @@ public struct Service: ServiceType {
 
   public func addVideo(file fileURL: URL, toDraft draft: UpdateDraft)
     -> SignalProducer<UpdateDraft.Video, ErrorEnvelope> {
-    return request(Route.addVideo(fileUrl: fileURL, toDraft: draft))
+    return request(route: Route.addVideo(fileUrl: fileURL, toDraft: draft))
   }
 
   public func cancelBacking(input: CancelBackingInput)
@@ -146,12 +146,12 @@ public struct Service: ServiceType {
 
   public func delete(image: UpdateDraft.Image, fromDraft draft: UpdateDraft)
     -> SignalProducer<UpdateDraft.Image, ErrorEnvelope> {
-    return request(.deleteImage(image, fromDraft: draft))
+    return request(route: .deleteImage(image, fromDraft: draft))
   }
 
   public func delete(video: UpdateDraft.Video, fromDraft draft: UpdateDraft)
     -> SignalProducer<UpdateDraft.Video, ErrorEnvelope> {
-    return request(.deleteVideo(video, fromDraft: draft))
+    return request(route: .deleteVideo(video, fromDraft: draft))
   }
 
   public func exportData() -> SignalProducer<VoidEnvelope, ErrorEnvelope> {
@@ -355,7 +355,7 @@ public struct Service: ServiceType {
   }
 
   public func fetchUpdateDraft(forProject project: Project) -> SignalProducer<UpdateDraft, ErrorEnvelope> {
-    return request(.fetchUpdateDraft(forProject: project))
+    return request(route: .fetchUpdateDraft(forProject: project))
   }
 
   public func fetchUnansweredSurveyResponses() -> SignalProducer<[SurveyResponse], ErrorEnvelope> {
@@ -484,7 +484,7 @@ public struct Service: ServiceType {
 
   public func update(draft: UpdateDraft, title: String, body: String, isPublic: Bool)
     -> SignalProducer<UpdateDraft, ErrorEnvelope> {
-    return request(.updateUpdateDraft(draft, title: title, body: body, isPublic: isPublic))
+    return request(route: .updateUpdateDraft(draft, title: title, body: body, isPublic: isPublic))
   }
 
   public func updatePledge(
