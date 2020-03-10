@@ -113,3 +113,35 @@ extension Reward: GraphIDBridging {
     return "Reward"
   }
 }
+
+extension Reward: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case id, description, reward, limit, minimum, remaining, title
+    case backersCount = "backers_count"
+    case convertedMinimum = "converted_minimum"
+    case endsAt = "ends_at"
+    case estimatedDeliveryOn = "estimated_delivery_on"
+    case rewardsItems = "rewards_items"
+    case startsAt = "starts_at"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    id = try container.decode(.id)
+    description = container.decodeOptional(.description)
+      ?? container.decodeOptional(.reward)
+      ?? ""
+    limit = container.decodeOptional(.limit)
+    minimum = try container.decode(.minimum)
+    remaining = container.decodeOptional(.remaining)
+    title = container.decodeOptional(.title)
+    backersCount = container.decodeOptional(.backersCount)
+    convertedMinimum = try container.decode(.convertedMinimum)
+    endsAt = container.decodeOptional(.endsAt)
+    estimatedDeliveryOn = container.decodeOptional(.estimatedDeliveryOn)
+    rewardsItems = container.decodeArray(.rewardsItems)
+    startsAt = container.decodeOptional(.startsAt)
+    shipping = try .init(from: decoder)
+  }
+}
