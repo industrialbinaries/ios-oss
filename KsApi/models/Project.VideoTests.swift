@@ -2,14 +2,13 @@
 import XCTest
 
 final class ProjectVideoTests: XCTestCase {
-  func testJsonParsing_WithFullData() {
-    let video = Project.Video.decodeJSONDictionary([
+  func testJsonParsing_WithFullData() throws {
+    let video = try Project.Video.decodeJSON([
       "id": 1,
       "high": "kickstarter.com/video.mp4"
-    ])
+      ]).get()
 
-    XCTAssertNil(video.error)
-    XCTAssertEqual(video.value?.id, 1)
-    XCTAssertEqual(video.value?.high, "kickstarter.com/video.mp4")
+    XCTAssertEqual(video.id, 1)
+    XCTAssertEqual(video.high, "kickstarter.com/video.mp4")
   }
 }

@@ -51,7 +51,7 @@ public struct Project {
     public var hls: String?
   }
 
-  public enum State: String, Argo.Decodable, CaseIterable {
+  public enum State: String, Argo.Decodable, CaseIterable, Swift.Decodable {
     case canceled
     case failed
     case live
@@ -182,7 +182,7 @@ public struct Project {
   public struct Photo {
     public var full: String
     public var med: String
-    public var size1024x768: String?
+    public var size1024x768: String? // TODO: Maybe needs a better name? It can contain the values for both 1024x768 and 1024x576.
     public var small: String
   }
 
@@ -352,3 +352,123 @@ extension Project: GraphIDBridging {
     return "Project"
   }
 }
+
+// MARK: Swift decodable
+
+extension Project.UrlsEnvelope: Swift.Decodable {}
+
+extension Project.UrlsEnvelope.WebEnvelope: Swift.Decodable {}
+
+extension Project: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case blurb, id, category, creator, location, name, photo, rewards, slug, state, urls, video
+    case availableCardTypes = "available_card_types"
+    case prelaunchActivated = "prelaunch_activated"
+    case staffPick = "staff_pick"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    blurb = try container.decode(.blurb)
+    id = try container.decode(.id)
+    category = try container.decode(.category)
+    name = try container.decode(.name)
+    creator = try container.decode(.creator)
+    location = container.decodeOptional(.location)
+      ?? .none
+    photo = try container.decode(.photo)
+    rewards = container.decodeArray(.rewards)
+    slug = try container.decode(.slug)
+    state = try container.decode(.state)
+    urls = try container.decode(.urls)
+    video = try container.decode(.video)
+    availableCardTypes = container.decodeOptional(.availableCardTypes)
+    prelaunchActivated = container.decodeOptional(.prelaunchActivated)
+    staffPick = try container.decode(.staffPick)
+    stats = try .init(from: decoder)
+    personalization = try .init(from: decoder)
+    country = try .init(from: decoder)
+    memberData = try .init(from: decoder)
+    dates = try .init(from: decoder)
+  }
+}
+
+
+extension Project.Category: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case id, name
+    case parentId = "parent_id"
+    case parentName = "parent_name"
+  }
+}
+
+extension Project.Stats: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case currency, goal, pledged
+    case backersCount = "backers_count"
+    case commentsCount = "comments_count"
+    case convertedPledgedAmount = "converted_pledged_amount"
+    case currentCurrency = "current_currency"
+    case currentCurrencyRate = "fx_rate"
+    case staticUsdRate = "static_usd_rate"
+    case updatesCount = "updates_count"
+  }
+}
+
+extension Project.Personalization: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case backing, friends
+    case isBacking = "is_backing"
+    case isStarred = "is_starred"
+  }
+}
+
+extension Project.MemberData: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case permissions
+    case lastUpdatePublishedAt = "last_update_published_at"
+    case unreadMessagesCount = "unread_messages_count"
+    case unseenActivityCount = "unseen_activity_count"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    lastUpdatePublishedAt = container.decodeOptional(.lastUpdatePublishedAt)
+    unreadMessagesCount = container.decodeOptional(.unreadMessagesCount)
+    unseenActivityCount = container.decodeOptional(.unseenActivityCount)
+    let permissions: [Failable<Permission>] = container.decodeArray(.permissions)
+    self.permissions = permissions
+      .compactMap { $0.value }
+      .filter { $0 != .unknown }
+  }
+}
+
+extension Project.MemberData.Permission: Swift.Decodable {}
+
+extension Project.Dates: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case deadline
+    case featuredAt = "featured_at"
+    case launchedAt = "launched_at"
+    case stateChangedAt = "state_changed_at"
+  }
+}
+
+extension Project.Photo: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case full, med, small
+    case url1024x768 = "1024x768"
+    case url1024x576 = "1024x576"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    full = try container.decode(.full)
+    med = try container.decode(.med)
+    small = try container.decode(.small)
+    size1024x768 = container.decodeOptional(.url1024x768)
+      ?? container.decodeOptional(.url1024x576)
+  }
+}
+
+extension Project.Video: Swift.Decodable {}
