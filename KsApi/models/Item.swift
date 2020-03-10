@@ -18,3 +18,10 @@ extension Item: Argo.Decodable {
       <*> json <| "project_id"
   }
 }
+
+extension Item: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case id, description, name
+    case projectId = "project_id"
+  }
+}
