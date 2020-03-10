@@ -313,3 +313,91 @@ extension User.Stats: EncodableType {
     return result
   }
 }
+
+// MARK: - Swift decodable
+
+extension User: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case avatar, id, location, name, social
+    case facebookConnected = "facebook_connected"
+    case isAdmin = "is_admin"
+    case isFriend = "is_friend"
+    case needsFreshFacebookToken = "needs_fresh_facebook_token"
+    case optedOutOfRecommendations = "opted_out_of_recommendations"
+    case showPublicProfile = "show_public_profile"
+    case unseenActivityCount = "unseen_activity_count"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    id = try container.decode(.id)
+    avatar = try container.decode(.avatar)
+    location = container.decodeOptional(.location)
+    name = try container.decode(.name)
+    social = container.decodeOptional(.social)
+    facebookConnected = container.decodeOptional(.facebookConnected)
+    isAdmin = container.decodeOptional(.isAdmin)
+    isFriend = container.decodeOptional(.isFriend)
+    needsFreshFacebookToken = container.decodeOptional(.needsFreshFacebookToken)
+    optedOutOfRecommendations = container.decodeOptional(.optedOutOfRecommendations)
+    showPublicProfile = container.decodeOptional(.showPublicProfile)
+    unseenActivityCount = container.decodeOptional(.unseenActivityCount)
+    newsletters = try .init(from: decoder)
+    notifications = try .init(from: decoder)
+    stats = try .init(from: decoder)
+  }
+}
+
+extension User.Avatar: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case large, medium, small
+  }
+}
+
+extension User.NewsletterSubscriptions: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case arts = "arts_culture_newsletter"
+    case games = "games_newsletter"
+    case happening = "happening_newsletter"
+    case invent = "invent_newsletter"
+    case promo = "promo_newsletter"
+    case weekly = "weekly_newsletter"
+    case films = "film_newsletter"
+    case publishing = "publishing_newsletter"
+    case alumni = "alumni_newsletter"
+    case music = "music_newsletter"
+  }
+}
+
+extension User.Notifications: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+      case backings = "notify_of_backings"
+      case commentReplies = "notify_of_comment_replies"
+      case comments = "notify_of_comments"
+      case creatorDigest = "notify_of_creator_digest"
+      case creatorTips = "notify_of_creator_edu"
+      case follower = "notify_of_follower"
+      case friendActivity = "notify_of_friend_activity"
+      case messages = "notify_of_messages"
+      case mobileBackings = "notify_mobile_of_backings"
+      case mobileComments = "notify_mobile_of_comments"
+      case mobileFollower = "notify_mobile_of_follower"
+      case mobileFriendActivity = "notify_mobile_of_friend_activity"
+      case mobileMessages = "notify_mobile_of_messages"
+      case mobilePostLikes = "notify_mobile_of_post_likes"
+      case mobileUpdates = "notify_mobile_of_updates"
+      case postLikes = "notify_of_post_likes"
+      case updates = "notify_of_updates"
+  }
+}
+
+extension User.Stats: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case backedProjectsCount = "backed_projects_count"
+    case createdProjectsCount = "created_projects_count"
+    case memberProjectsCount = "member_projects_count"
+    case starredProjectsCount = "starred_projects_count"
+    case unansweredSurveysCount = "unanswered_surveys_count"
+    case unreadMessagesCount = "unread_messages_count"
+  }
+}

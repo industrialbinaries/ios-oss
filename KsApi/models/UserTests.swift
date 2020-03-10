@@ -12,7 +12,7 @@ final class UserTests: XCTestCase {
     XCTAssertNotEqual("", User.template.debugDescription)
   }
 
-  func testJsonParsing() {
+  func testJsonParsing() throws {
     let json: [String: Any] = [
       "id": 1,
       "name": "Blob",
@@ -40,23 +40,21 @@ final class UserTests: XCTestCase {
       "show_public_profile": false,
       "social": true
     ]
-    let decoded = User.decodeJSONDictionary(json)
-    let user = decoded.value
+    let user = try User.decodeJSON(json).get()
 
-    XCTAssertNil(decoded.error)
-    XCTAssertEqual(1, user?.id)
-    XCTAssertEqual(false, user?.isAdmin)
-    XCTAssertEqual("http://www.kickstarter.com/small.jpg", user?.avatar.small)
-    XCTAssertEqual(2, user?.stats.backedProjectsCount)
-    XCTAssertEqual(false, user?.newsletters.weekly)
-    XCTAssertEqual(false, user?.newsletters.promo)
-    XCTAssertEqual(false, user?.newsletters.happening)
-    XCTAssertEqual(false, user?.newsletters.games)
-    XCTAssertEqual(false, user?.notifications.commentReplies)
-    XCTAssertEqual(false, user?.facebookConnected)
-    XCTAssertEqual(false, user?.isFriend)
-    XCTAssertNotNil(user?.location)
-    XCTAssertEqual(json as NSDictionary?, user?.encode() as NSDictionary?)
+    XCTAssertEqual(1, user.id)
+    XCTAssertEqual(false, user.isAdmin)
+    XCTAssertEqual("http://www.kickstarter.com/small.jpg", user.avatar.small)
+    XCTAssertEqual(2, user.stats.backedProjectsCount)
+    XCTAssertEqual(false, user.newsletters.weekly)
+    XCTAssertEqual(false, user.newsletters.promo)
+    XCTAssertEqual(false, user.newsletters.happening)
+    XCTAssertEqual(false, user.newsletters.games)
+    XCTAssertEqual(false, user.notifications.commentReplies)
+    XCTAssertEqual(false, user.facebookConnected)
+    XCTAssertEqual(false, user.isFriend)
+    XCTAssertNotNil(user.location)
+    XCTAssertEqual(json as NSDictionary?, user.encode() as NSDictionary?)
   }
 
   func testJsonEncoding() {

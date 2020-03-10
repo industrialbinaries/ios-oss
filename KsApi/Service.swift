@@ -338,11 +338,11 @@ public struct Service: ServiceType {
   }
 
   public func fetchUserSelf() -> SignalProducer<User, ErrorEnvelope> {
-    return request(.userSelf)
+    return request(route: .userSelf)
   }
 
   public func fetchUser(userId: Int) -> SignalProducer<User, ErrorEnvelope> {
-    return request(.user(userId: userId))
+    return request(route: .user(userId: userId))
   }
 
   public func fetchUser(_ user: User) -> SignalProducer<User, ErrorEnvelope> {
@@ -372,7 +372,7 @@ public struct Service: ServiceType {
   }
 
   public func followFriend(userId id: Int) -> SignalProducer<User, ErrorEnvelope> {
-    return request(.followFriend(userId: id))
+    return request(route: .followFriend(userId: id))
   }
 
   public func incrementVideoCompletion(forProject project: Project) ->
@@ -435,7 +435,7 @@ public struct Service: ServiceType {
   }
 
   public func resetPassword(email: String) -> SignalProducer<User, ErrorEnvelope> {
-    return request(.resetPassword(email: email))
+    return request(route: .resetPassword(email: email))
   }
 
   public func searchMessages(query: String, project: Project?)
@@ -511,7 +511,7 @@ public struct Service: ServiceType {
   }
 
   public func updateUserSelf(_ user: User) -> SignalProducer<User, ErrorEnvelope> {
-    return request(.updateUserSelf(user))
+    return request(route: .updateUserSelf(user))
   }
 
   public func unwatchProject(input: WatchProjectInput) ->
