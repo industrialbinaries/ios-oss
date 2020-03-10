@@ -23,20 +23,20 @@ public struct DiscoveryParams {
   public var state: State?
   public var tagId: TagID?
 
-  public enum State: String, Argo.Decodable {
+  public enum State: String, Argo.Decodable, Swift.Decodable {
     case all
     case live
     case successful
   }
 
-  public enum Sort: String, Argo.Decodable {
+  public enum Sort: String, Argo.Decodable, Swift.Decodable {
     case endingSoon = "end_date"
     case magic
     case newest
     case popular = "popularity"
   }
 
-  public enum TagID: String, Argo.Decodable {
+  public enum TagID: String, Argo.Decodable, Swift.Decodable {
     case goRewardless = "518"
   }
 
@@ -176,5 +176,79 @@ private func categoryInfo(_ json: [String: JSON]) -> (String, String)? {
     return ("\(id)", name)
   default:
     return nil
+  }
+}
+
+extension DiscoveryParams: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case backed, category, collaborated, created, page, recommended, seed, social, sort, starred, state
+    case hasVideo = "has_video"
+    case includePOTD = "include_potd"
+    case perPage = "per_page"
+    case similarTo = "similar_to"
+    case staffPicks = "staff_picks"
+    case query = "term"
+    case tagId = "tag_id"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    backed = try stringIntToBool(container.decode(.backed))
+    category = container.decodeOptional(.category)
+      ?? Category(id: "-1", name: "Unknown Category")
+    collaborated = try stringToBool(container.decodeOptional(.collaborated))
+    hasVideo = try stringToBool(container.decode(.hasVideo))
+    includePOTD = try stringToBool(container.decode(.includePOTD))
+    page = stringToInt(container.decodeOptional(.page))
+    perPage = stringToInt(container.decodeOptional(.perPage))
+    query = container.decodeOptional(.query)
+    recommended = try stringToBool(container.decode(.recommended))
+    seed = stringToInt(container.decodeOptional(.seed))
+    similarTo = container.decodeOptional(.similarTo)
+    social = try stringIntToBool(container.decode(.social))
+    sort = container.decodeOptional(.sort)
+    staffPicks = try stringToBool(container.decode(.staffPicks))
+    starred = try stringIntToBool(container.decode(.starred))
+    state = container.decodeOptional(.state)
+    tagId = container.decodeOptional(.tagId)
+  }
+}
+
+private func stringToBool(_ string: String?) throws -> Bool? {
+  guard let string = string else { return nil }
+  switch string {
+  // taken from server's `value_to_boolean` function
+  case "true", "1", "t", "T", "TRUE", "on", "ON":
+    return true
+  case "false", "0", "f", "F", "FALSE", "off", "OFF":
+    return false
+  default:
+    throw DecoderError.underline("Could not parse string into bool.")
+  }
+}
+
+private func stringToInt(_ string: String?) -> Int? {
+  guard let string = string else { return nil }
+  return
+    Double(string).flatMap(Int.init)
+      ?? Int(string)
+      ?? 0
+}
+
+enum DecoderError: Error {
+  case underline(String)
+}
+
+private func stringIntToBool(_ string: String?) throws -> Bool? {
+  guard let string = string else { return nil }
+  return try Int(string)
+    .filter { $0 <= 1 && $0 >= -1 }
+    .map { value -> Bool in
+      if value == 0 {
+        throw DecoderError.underline("Could not parse string into bool.")
+      } else {
+        return value == 1
+      }
   }
 }
