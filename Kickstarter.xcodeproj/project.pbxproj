@@ -440,6 +440,7 @@
 		A45ED1DC2417BF2E0016E285 /* DiscoveryEnvelopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A45ED1DB2417BF2E0016E285 /* DiscoveryEnvelopeTests.swift */; };
 		A45ED1DE2417E1580016E285 /* StarEnvelopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A45ED1DD2417E1580016E285 /* StarEnvelopeTests.swift */; };
 		A45ED1E02417E7030016E285 /* MessageThreadEnvelopeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A45ED1DF2417E7030016E285 /* MessageThreadEnvelopeTest.swift */; };
+		A45ED1E22417E92C0016E285 /* MessageThreadsEnvelopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A45ED1E12417E92C0016E285 /* MessageThreadsEnvelopeTests.swift */; };
 		A41E8D33240EA7CB00EAF2B3 /* ExportDataEnvelopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A41E8D32240EA7CB00EAF2B3 /* ExportDataEnvelopeTests.swift */; };
 		A707BAD81CFFAB9400653B2F /* LoginIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A707BAD41CFFAB9400653B2F /* LoginIntent.swift */; };
 		A707BADA1CFFAB9400653B2F /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = A707BAD51CFFAB9400653B2F /* Notifications.swift */; };
@@ -1850,6 +1851,7 @@
 		A45ED1DB2417BF2E0016E285 /* DiscoveryEnvelopeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoveryEnvelopeTests.swift; sourceTree = "<group>"; };
 		A45ED1DD2417E1580016E285 /* StarEnvelopeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarEnvelopeTests.swift; sourceTree = "<group>"; };
 		A45ED1DF2417E7030016E285 /* MessageThreadEnvelopeTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageThreadEnvelopeTest.swift; sourceTree = "<group>"; };
+		A45ED1E12417E92C0016E285 /* MessageThreadsEnvelopeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageThreadsEnvelopeTests.swift; sourceTree = "<group>"; };
 		A41E8D32240EA7CB00EAF2B3 /* ExportDataEnvelopeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDataEnvelopeTests.swift; sourceTree = "<group>"; };
 		A707BAD31CFFAB9400653B2F /* HelpType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpType.swift; sourceTree = "<group>"; };
 		A707BAD41CFFAB9400653B2F /* LoginIntent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginIntent.swift; sourceTree = "<group>"; };
@@ -3997,6 +3999,7 @@
 				D01587D11EEB2ED7006E7684 /* MessageThreadEnvelope.swift */,
 				A45ED1DF2417E7030016E285 /* MessageThreadEnvelopeTest.swift */,
 				D01587D21EEB2ED7006E7684 /* MessageThreadsEnvelope.swift */,
+				A45ED1E12417E92C0016E285 /* MessageThreadsEnvelopeTests.swift */,
 				D01587D41EEB2ED7006E7684 /* Param.swift */,
 				D79CF38521AC9AD200ECB73A /* PaymentType.swift */,
 				D01587D51EEB2ED7006E7684 /* Project.Country.swift */,
@@ -5845,6 +5848,7 @@
 				D0D10C171EEB4550005EBAD0 /* PushEnvelopeTests.swift in Sources */,
 				D0D10C1D1EEB4550005EBAD0 /* UpdatePledgeEnvelopeTests.swift in Sources */,
 				D0D10C0E1EEB4550005EBAD0 /* ItemTests.swift in Sources */,
+				A45ED1E22417E92C0016E285 /* MessageThreadsEnvelopeTests.swift in Sources */,
 				D755ECAE23216C290096F189 /* CreateBackingInputTests.swift in Sources */,
 				D755ECB123217D5B0096F189 /* CreateBackingEnvelopeTests.swift in Sources */,
 				D0D10C1B1EEB4550005EBAD0 /* SurveyResponseTests.swift in Sources */,

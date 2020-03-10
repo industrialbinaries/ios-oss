@@ -36,3 +36,20 @@ extension MessageThreadsEnvelope.UrlsEnvelope.ApiEnvelope: Argo.Decodable {
       <^> json <| "more_message_threads"
   }
 }
+
+// MARK: - Swift decodable
+
+extension MessageThreadsEnvelope: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case urls
+    case messageThreads = "message_threads"
+  }
+}
+
+extension MessageThreadsEnvelope.UrlsEnvelope: Swift.Decodable {}
+
+extension MessageThreadsEnvelope.UrlsEnvelope.ApiEnvelope: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case moreMessageThreads = "more_message_threads"
+  }
+}
