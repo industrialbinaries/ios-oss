@@ -218,12 +218,12 @@ public struct Service: ServiceType {
   }
 
   public func fetchFriends() -> SignalProducer<FindFriendsEnvelope, ErrorEnvelope> {
-    return request(.friends)
+    return request(route: .friends)
   }
 
   public func fetchFriends(paginationUrl: String)
     -> SignalProducer<FindFriendsEnvelope, ErrorEnvelope> {
-    return requestPagination(paginationUrl)
+    return requestPagination(url: paginationUrl)
   }
 
   public func fetchFriendStats() -> SignalProducer<FriendStatsEnvelope, ErrorEnvelope> {
