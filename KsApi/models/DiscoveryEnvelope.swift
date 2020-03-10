@@ -53,3 +53,15 @@ extension DiscoveryEnvelope.StatsEnvelope: Argo.Decodable {
       <^> json <| "count"
   }
 }
+
+extension DiscoveryEnvelope: Swift.Decodable {}
+
+extension DiscoveryEnvelope.UrlsEnvelope: Swift.Decodable {}
+
+extension DiscoveryEnvelope.UrlsEnvelope.ApiEnvelope: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case moreProjects = "more_projects"
+  }
+}
+
+extension DiscoveryEnvelope.StatsEnvelope: Swift.Decodable {}

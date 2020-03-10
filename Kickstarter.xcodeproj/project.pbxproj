@@ -437,6 +437,7 @@
 		A412945624164BCE00ECB8AB /* ShippingRulesEnvelopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A412945524164BCE00ECB8AB /* ShippingRulesEnvelopeTests.swift */; };
 		A41E8D33240EA7CB00EAF2B3 /* ExportDataEnvelopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A41E8D32240EA7CB00EAF2B3 /* ExportDataEnvelopeTests.swift */; };
 		A45ED1DA241799530016E285 /* AccessTokenEnvelopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A45ED1D9241799530016E285 /* AccessTokenEnvelopeTests.swift */; };
+		A45ED1DC2417BF2E0016E285 /* DiscoveryEnvelopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A45ED1DB2417BF2E0016E285 /* DiscoveryEnvelopeTests.swift */; };
 		A41E8D33240EA7CB00EAF2B3 /* ExportDataEnvelopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A41E8D32240EA7CB00EAF2B3 /* ExportDataEnvelopeTests.swift */; };
 		A707BAD81CFFAB9400653B2F /* LoginIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A707BAD41CFFAB9400653B2F /* LoginIntent.swift */; };
 		A707BADA1CFFAB9400653B2F /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = A707BAD51CFFAB9400653B2F /* Notifications.swift */; };
@@ -1844,6 +1845,7 @@
 		A412945524164BCE00ECB8AB /* ShippingRulesEnvelopeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingRulesEnvelopeTests.swift; sourceTree = "<group>"; };
 		A41E8D32240EA7CB00EAF2B3 /* ExportDataEnvelopeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDataEnvelopeTests.swift; sourceTree = "<group>"; };
 		A45ED1D9241799530016E285 /* AccessTokenEnvelopeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessTokenEnvelopeTests.swift; sourceTree = "<group>"; };
+		A45ED1DB2417BF2E0016E285 /* DiscoveryEnvelopeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoveryEnvelopeTests.swift; sourceTree = "<group>"; };
 		A41E8D32240EA7CB00EAF2B3 /* ExportDataEnvelopeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDataEnvelopeTests.swift; sourceTree = "<group>"; };
 		A707BAD31CFFAB9400653B2F /* HelpType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpType.swift; sourceTree = "<group>"; };
 		A707BAD41CFFAB9400653B2F /* LoginIntent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginIntent.swift; sourceTree = "<group>"; };
@@ -3961,6 +3963,7 @@
 				D62B1476221216A000AC05C8 /* DeletePaymentMethodEnvelope.swift */,
 				D62B14AF2212184500AC05C8 /* DeletePaymentMethodEnvelopeTests.swift */,
 				D015878C1EEB2ED6006E7684 /* DiscoveryEnvelope.swift */,
+				A45ED1DB2417BF2E0016E285 /* DiscoveryEnvelopeTests.swift */,
 				D015878D1EEB2ED6006E7684 /* DiscoveryParams.swift */,
 				D015878E1EEB2ED6006E7684 /* DiscoveryParamsTests.swift */,
 				D015878F1EEB2ED6006E7684 /* ErrorEnvelope.swift */,
@@ -5811,6 +5814,7 @@
 				77DB532A2215D0AA0078991C /* GraphUserCreditCardTests.swift in Sources */,
 				D01589A21EEB2ED7006E7684 /* ServiceTypeTests.swift in Sources */,
 				D0D10C0F1EEB4550005EBAD0 /* LocationTests.swift in Sources */,
+				A45ED1DC2417BF2E0016E285 /* DiscoveryEnvelopeTests.swift in Sources */,
 				D0D10C121EEB4550005EBAD0 /* Project.CountryTests.swift in Sources */,
 				D0D10C0B1EEB4550005EBAD0 /* ErrorEnvelopeTests.swift in Sources */,
 				D0D10C031EEB4550005EBAD0 /* BackingTests.swift in Sources */,
