@@ -436,6 +436,7 @@
 		A412945424163B1B00ECB8AB /* VoidEnvelopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A412945324163B1B00ECB8AB /* VoidEnvelopeTests.swift */; };
 		A412945624164BCE00ECB8AB /* ShippingRulesEnvelopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A412945524164BCE00ECB8AB /* ShippingRulesEnvelopeTests.swift */; };
 		A41E8D33240EA7CB00EAF2B3 /* ExportDataEnvelopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A41E8D32240EA7CB00EAF2B3 /* ExportDataEnvelopeTests.swift */; };
+		A445C5242417F34C00D4D5E0 /* ActivityEnvelopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A445C5222417F34300D4D5E0 /* ActivityEnvelopeTests.swift */; };
 		A45ED1DA241799530016E285 /* AccessTokenEnvelopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A45ED1D9241799530016E285 /* AccessTokenEnvelopeTests.swift */; };
 		A45ED1DC2417BF2E0016E285 /* DiscoveryEnvelopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A45ED1DB2417BF2E0016E285 /* DiscoveryEnvelopeTests.swift */; };
 		A45ED1DE2417E1580016E285 /* StarEnvelopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A45ED1DD2417E1580016E285 /* StarEnvelopeTests.swift */; };
@@ -1847,6 +1848,7 @@
 		A412945324163B1B00ECB8AB /* VoidEnvelopeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoidEnvelopeTests.swift; sourceTree = "<group>"; };
 		A412945524164BCE00ECB8AB /* ShippingRulesEnvelopeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingRulesEnvelopeTests.swift; sourceTree = "<group>"; };
 		A41E8D32240EA7CB00EAF2B3 /* ExportDataEnvelopeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDataEnvelopeTests.swift; sourceTree = "<group>"; };
+		A445C5222417F34300D4D5E0 /* ActivityEnvelopeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityEnvelopeTests.swift; sourceTree = "<group>"; };
 		A45ED1D9241799530016E285 /* AccessTokenEnvelopeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessTokenEnvelopeTests.swift; sourceTree = "<group>"; };
 		A45ED1DB2417BF2E0016E285 /* DiscoveryEnvelopeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoveryEnvelopeTests.swift; sourceTree = "<group>"; };
 		A45ED1DD2417E1580016E285 /* StarEnvelopeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarEnvelopeTests.swift; sourceTree = "<group>"; };
@@ -3940,8 +3942,9 @@
 			children = (
 				D01587781EEB2ED6006E7684 /* AccessTokenEnvelope.swift */,
 				D01587791EEB2ED6006E7684 /* Activity.swift */,
-				D015877A1EEB2ED6006E7684 /* ActivityEnvelope.swift */,
 				D015877B1EEB2ED6006E7684 /* ActivityTests.swift */,
+				D015877A1EEB2ED6006E7684 /* ActivityEnvelope.swift */,
+				A445C5222417F34300D4D5E0 /* ActivityEnvelopeTests.swift */,
 				D6B9F90922035840003282A5 /* Author.swift */,
 				D6B9F94422035E34003282A5 /* AuthorTests.swift */,
 				D015877C1EEB2ED6006E7684 /* Backing.swift */,
@@ -5839,6 +5842,7 @@
 				D0D10C131EEB4550005EBAD0 /* Project.PhotoTests.swift in Sources */,
 				D0D10C071EEB4550005EBAD0 /* CommentTests.swift in Sources */,
 				8AF34C762342D1D2000B211D /* UpdateBackingInputTests.swift in Sources */,
+				A445C5242417F34C00D4D5E0 /* ActivityEnvelopeTests.swift in Sources */,
 				D0D10C191EEB4550005EBAD0 /* RewardTests.swift in Sources */,
 				A45ED1E02417E7030016E285 /* MessageThreadEnvelopeTest.swift in Sources */,
 				A412945624164BCE00ECB8AB /* ShippingRulesEnvelopeTests.swift in Sources */,
