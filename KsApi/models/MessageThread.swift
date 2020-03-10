@@ -30,3 +30,11 @@ extension MessageThread: Equatable {}
 public func == (lhs: MessageThread, rhs: MessageThread) -> Bool {
   return lhs.id == rhs.id
 }
+
+extension MessageThread: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case backing, id, closed, participant, project
+    case unreadMessagesCount = "unread_messages_count"
+    case lastMessage = "last_message"
+  }
+}

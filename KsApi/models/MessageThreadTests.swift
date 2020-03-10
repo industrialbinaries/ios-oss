@@ -1,10 +1,9 @@
-import Argo
 @testable import KsApi
 import XCTest
 
 internal final class MessageThreadTests: XCTestCase {
-  func testDecoding() {
-    let result = MessageThread.decodeJSONDictionary([
+  func testDecoding() throws {
+    let result = try MessageThread.decodeJSON([
       "closed": false,
       "id": 1,
       "last_message": [
@@ -91,9 +90,14 @@ internal final class MessageThreadTests: XCTestCase {
         ],
         "state": "live"
       ]
-    ])
+      ]).get()
 
-    XCTAssertNil(result.error)
-    XCTAssertNotNil(result.value)
+    XCTAssertNotNil(result)
+    XCTAssertEqual(1, result.id)
+    XCTAssertEqual(1, result.unreadMessagesCount)
+    XCTAssertEqual(false, result.closed)
+    XCTAssertEqual(1, result.lastMessage.id)
+    XCTAssertEqual("Blob", result.participant.name)
+    XCTAssertEqual("Project", result.project.name)
   }
 }
