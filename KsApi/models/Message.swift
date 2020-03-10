@@ -21,3 +21,10 @@ extension Message: Argo.Decodable {
       <*> json <| "sender"
   }
 }
+
+extension Message: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case id, body, recipient, sender
+    case createdAt = "created_at"
+  }
+}
