@@ -405,12 +405,12 @@ public struct Service: ServiceType {
 
   public func login(email: String, password: String, code: String?) ->
     SignalProducer<AccessTokenEnvelope, ErrorEnvelope> {
-    return request(.login(email: email, password: password, code: code))
+    return request(route: .login(email: email, password: password, code: code))
   }
 
   public func login(facebookAccessToken: String, code: String?) ->
     SignalProducer<AccessTokenEnvelope, ErrorEnvelope> {
-    return request(.facebookLogin(facebookAccessToken: facebookAccessToken, code: code))
+    return request(route: .facebookLogin(facebookAccessToken: facebookAccessToken, code: code))
   }
 
   public func markAsRead(messageThread: MessageThread) -> SignalProducer<MessageThread, ErrorEnvelope> {
@@ -460,18 +460,19 @@ public struct Service: ServiceType {
     passwordConfirmation: String,
     sendNewsletters: Bool
   ) -> SignalProducer<AccessTokenEnvelope, ErrorEnvelope> {
-    return request(.signup(
-      name: name,
-      email: email,
-      password: password,
-      passwordConfirmation: passwordConfirmation,
-      sendNewsletters: sendNewsletters
-    ))
+    return request(
+      route: .signup(
+        name: name,
+        email: email,
+        password: password,
+        passwordConfirmation: passwordConfirmation,
+        sendNewsletters: sendNewsletters
+      ))
   }
 
   public func signup(facebookAccessToken token: String, sendNewsletters: Bool) ->
     SignalProducer<AccessTokenEnvelope, ErrorEnvelope> {
-    return request(.facebookSignup(facebookAccessToken: token, sendNewsletters: sendNewsletters))
+    return request(route: .facebookSignup(facebookAccessToken: token, sendNewsletters: sendNewsletters))
   }
 
   public func unfollowFriend(userId id: Int) -> SignalProducer<VoidEnvelope, ErrorEnvelope> {
