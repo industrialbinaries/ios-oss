@@ -89,3 +89,40 @@ extension Activity.MemberData: Argo.Decodable {
       <*> json <|? "reward_id"
   }
 }
+
+// MARK: - Swift decodable
+
+extension Activity: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case category, comment, id, project, update, user
+    case createdAt = "created_at"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    category = container.decodeOptional(.category)
+      ?? .unknown
+    comment = container.decodeOptional(.comment)
+    createdAt = try container.decode(.createdAt)
+    id = try container.decode(.id)
+    project = container.decodeOptional(.project)
+    update = container.decodeOptional(.update)
+    user = container.decodeOptional(.user)
+
+    memberData = try .init(from: decoder)
+  }
+}
+
+extension Activity.Category: Swift.Decodable {}
+
+extension Activity.MemberData: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case oldAmount = "old_amount"
+    case oldRewardId = "old_reward_id"
+    case newAmount = "new_amount"
+    case newRewardId = "new_reward_id"
+    case rewardId = "reward_id"
+    case amount, backing
+  }
+}
