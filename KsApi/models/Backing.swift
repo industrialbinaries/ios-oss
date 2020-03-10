@@ -162,3 +162,55 @@ extension Backing: GraphIDBridging {
     return "Backing"
   }
 }
+
+// MARK: - Swift decodable
+
+extension Backing: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case amount, backer, cancelable, id, reward, sequence, status
+    case backerId = "backer_id"
+    case backerCompleted = "backer_completed_at"
+    case locationId = "location_id"
+    case locationName = "location_name"
+    case paymentSource = "payment_source"
+    case pledgedAt = "pledged_at"
+    case projectCountry = "project_country"
+    case projectId = "project_id"
+    case rewardId = "reward_id"
+    case shippingAmount = "shipping_amount"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    id = try container.decode(.id)
+    amount = try container.decode(.amount)
+    backer = container.decodeOptional(.backer)
+    cancelable = try container.decode(.cancelable)
+    reward = container.decodeOptional(.reward)
+    sequence = try container.decode(.sequence)
+    status = try container.decode(.status)
+    backerId = try container.decode(.backerId)
+    backerCompleted = container.decodeOptional(.backerCompleted)
+    locationId = container.decodeOptional(.locationId)
+    locationName = container.decodeOptional(.locationName)
+    paymentSource = container.decodeOptional(.paymentSource)
+    pledgedAt = try container.decode(.pledgedAt)
+    projectCountry = try container.decode(.projectCountry)
+    projectId = try container.decode(.projectId)
+    rewardId = container.decodeOptional(.rewardId)
+    shippingAmount = container.decodeOptional(.shippingAmount)
+  }
+}
+
+extension Backing.PaymentSource: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case id, state, type
+    case expirationDate = "expiration_date"
+    case lastFour = "last_four"
+    case paymentType = "payment_type"
+  }
+}
+
+extension Backing.Status: Swift.Decodable {}
+
+extension Backing.PaymentType: Swift.Decodable {}
