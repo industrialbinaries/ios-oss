@@ -16,3 +16,10 @@ extension MessageThreadEnvelope: Argo.Decodable {
       <*> json <| "message_thread"
   }
 }
+
+extension MessageThreadEnvelope: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case participants, messages
+    case messageThread = "message_thread"
+  }
+}
