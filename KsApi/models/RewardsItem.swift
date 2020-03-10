@@ -18,3 +18,10 @@ extension RewardsItem: Argo.Decodable {
       <*> json <| "reward_id"
   }
 }
+
+extension RewardsItem: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case id, item, quantity
+    case rewardId = "reward_id"
+  }
+}

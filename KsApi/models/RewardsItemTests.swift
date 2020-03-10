@@ -1,10 +1,9 @@
 @testable import KsApi
-import Prelude
 import XCTest
 
 final class RewardsItemTests: XCTestCase {
-  func testDecoding() {
-    let decoded = RewardsItem.decodeJSONDictionary([
+  func testDecoding() throws {
+    let rewards = try RewardsItem.decodeJSON([
       "id": 1,
       "item": [
         "description": "Hello",
@@ -14,17 +13,15 @@ final class RewardsItemTests: XCTestCase {
       ],
       "quantity": 2,
       "reward_id": 3
-    ])
+      ]).get()
 
-    XCTAssertNil(decoded.error)
+    XCTAssertEqual(1, rewards.id)
+    XCTAssertEqual(2, rewards.quantity)
+    XCTAssertEqual(3, rewards.rewardId)
 
-    XCTAssertEqual(1, decoded.value?.id)
-    XCTAssertEqual(2, decoded.value?.quantity)
-    XCTAssertEqual(3, decoded.value?.rewardId)
-
-    XCTAssertEqual("Hello", decoded.value?.item.description)
-    XCTAssertEqual(1, decoded.value?.item.id)
-    XCTAssertEqual("The thing", decoded.value?.item.name)
-    XCTAssertEqual(1, decoded.value?.item.projectId)
+    XCTAssertEqual("Hello", rewards.item.description)
+    XCTAssertEqual(1, rewards.item.id)
+    XCTAssertEqual("The thing", rewards.item.name)
+    XCTAssertEqual(1, rewards.item.projectId)
   }
 }
