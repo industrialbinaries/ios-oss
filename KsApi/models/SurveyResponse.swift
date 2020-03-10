@@ -45,3 +45,16 @@ extension SurveyResponse.UrlsEnvelope.WebEnvelope: Argo.Decodable {
       <^> json <| "survey"
   }
 }
+
+// MARK: - Swift decodable
+
+extension SurveyResponse: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case id, project, urls
+    case answeredAt = "answered_at"
+  }
+}
+
+extension SurveyResponse.UrlsEnvelope: Swift.Decodable {}
+
+extension SurveyResponse.UrlsEnvelope.WebEnvelope: Swift.Decodable {}
