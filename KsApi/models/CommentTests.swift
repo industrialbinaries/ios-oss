@@ -2,8 +2,8 @@
 import XCTest
 
 final class CommentTests: XCTestCase {
-  func testJSONParsing_WithCompleteData() {
-    let comment = Comment.decodeJSONDictionary([
+  func testJSONParsing_WithCompleteData() throws {
+    let comment = try Comment.decodeJSON([
       "author": [
         "id": 1,
         "name": "Blob",
@@ -25,14 +25,16 @@ final class CommentTests: XCTestCase {
       "created_at": 123_456_789.0,
       "deleted_at": 123_456_789.0,
       "id": 1
-    ])
+    ]).get()
 
-    XCTAssertNil(comment.error)
-    XCTAssertEqual(1, comment.value?.id)
+    XCTAssertEqual(1, comment.id)
+    XCTAssertEqual("hello!", comment.body)
+    XCTAssertEqual(123_456_789.0, comment.createdAt)
+    XCTAssertEqual(123_456_789.0, comment.deletedAt)
   }
 
-  func testJSONParsing_ZeroDeletedAt() {
-    let comment = Comment.decodeJSONDictionary([
+  func testJSONParsing_ZeroDeletedAt() throws {
+    let comment = try Comment.decodeJSON([
       "author": [
         "id": 1,
         "name": "Blob",
@@ -54,10 +56,8 @@ final class CommentTests: XCTestCase {
       "created_at": 123_456_789.0,
       "deleted_at": 0,
       "id": 1
-    ])
+    ]).get()
 
-    XCTAssertNil(comment.error)
-    XCTAssertNotNil(comment.value)
-    XCTAssertNil(comment.value?.deletedAt)
+    XCTAssertNil(comment.deletedAt)
   }
 }
