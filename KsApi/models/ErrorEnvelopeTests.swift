@@ -1,10 +1,9 @@
-import Argo
 @testable import KsApi
 import XCTest
 
 class ErrorEnvelopeTests: XCTestCase {
-  func testJsonDecodingWithFullData() {
-    let env = ErrorEnvelope.decodeJSONDictionary([
+  func testJsonDecodingWithFullData() throws {
+    let env = try ErrorEnvelope.decodeJSON([
       "error_messages": ["hello"],
       "ksr_code": "access_token_invalid",
       "http_code": 401,
@@ -12,12 +11,12 @@ class ErrorEnvelopeTests: XCTestCase {
         "backtrace": ["hello"],
         "message": "hello"
       ]
-    ])
+      ]).get()
     XCTAssertNotNil(env)
   }
 
-  func testJsonDecodingWithBadKsrCode() {
-    let env = ErrorEnvelope.decodeJSONDictionary([
+  func testJsonDecodingWithBadKsrCode() throws {
+    let env = try ErrorEnvelope.decodeJSON([
       "error_messages": ["hello"],
       "ksr_code": "doesnt_exist",
       "http_code": 401,
@@ -25,13 +24,12 @@ class ErrorEnvelopeTests: XCTestCase {
         "backtrace": ["hello"],
         "message": "hello"
       ]
-    ])
-    XCTAssertNil(env.error)
-    XCTAssertEqual(ErrorEnvelope.KsrCode.UnknownCode, env.value?.ksrCode)
+      ]).get()
+    XCTAssertEqual(ErrorEnvelope.KsrCode.UnknownCode, env.ksrCode)
   }
 
-  func testJsonDecodingWithNonStandardError() {
-    let env = ErrorEnvelope.decodeJSONDictionary([
+  func testJsonDecodingWithNonStandardError() throws {
+    let env = try ErrorEnvelope.decodeJSON([
       "status": 406,
       "data": [
         "errors": [
@@ -40,11 +38,10 @@ class ErrorEnvelopeTests: XCTestCase {
           ]
         ]
       ]
-    ])
-    XCTAssertNil(env.error)
-    XCTAssertEqual(ErrorEnvelope.KsrCode.UnknownCode, env.value?.ksrCode)
+      ]).get()
+    XCTAssertEqual(ErrorEnvelope.KsrCode.UnknownCode, env.ksrCode)
     // swiftlint:disable:next force_unwrapping
-    XCTAssertEqual(["Bad amount"], env.value!.errorMessages)
-    XCTAssertEqual(406, env.value?.httpCode)
+    XCTAssertEqual(["Bad amount"], env.errorMessages)
+    XCTAssertEqual(406, env.httpCode)
   }
 }
