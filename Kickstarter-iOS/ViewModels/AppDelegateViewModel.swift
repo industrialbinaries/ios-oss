@@ -290,8 +290,8 @@ public final class AppDelegateViewModel: AppDelegateViewModelType, AppDelegateVi
       }
 
     let deepLinkFromNotification = self.remoteNotificationProperty.signal.skipNil()
-      .map(decode)
-      .map { $0.value }
+      .map(PushEnvelope.decodeJSON)
+      .map { try? $0.get() }
       .skipNil()
       .map(navigation(fromPushEnvelope:))
 

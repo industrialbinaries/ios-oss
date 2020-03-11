@@ -1,6 +1,4 @@
-import Argo
-import Curry
-import Runes
+import Foundation
 
 public struct PushEnvelope {
   public let activity: Activity?
@@ -21,7 +19,7 @@ public struct PushEnvelope {
     public let userPhoto: String?
   }
 
-  public struct ApsEnvelope: Swift.Decodable {
+  public struct ApsEnvelope: Decodable {
     public let alert: String
   }
 
@@ -30,7 +28,7 @@ public struct PushEnvelope {
     public let projectId: Int
   }
 
-  public struct Project: Swift.Decodable {
+  public struct Project: Decodable {
     public let id: Int
     public let photo: String?
   }
@@ -46,79 +44,9 @@ public struct PushEnvelope {
   }
 }
 
-extension PushEnvelope: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<PushEnvelope> {
-    let update: Decoded<Update> = json <| "update" <|> json <| "post"
-    let optionalUpdate: Decoded<Update?> = update.map(Optional.some) <|> .success(nil)
+// MARK: - Decodable
 
-    let tmp = curry(PushEnvelope.init)
-      <^> json <|? "activity"
-      <*> json <| "aps"
-      <*> json <|? "for_creator"
-    return tmp
-      <*> json <|? "message"
-      <*> json <|? "project"
-      <*> json <|? "survey"
-      <*> optionalUpdate
-  }
-}
-
-extension PushEnvelope.Activity: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<PushEnvelope.Activity> {
-    let tmp = curry(PushEnvelope.Activity.init)
-      <^> json <| "category"
-      <*> json <|? "comment_id"
-      <*> json <| "id"
-      <*> json <|? "project_id"
-    return tmp
-      <*> json <|? "project_photo"
-      <*> json <|? "update_id"
-      <*> json <|? "user_photo"
-  }
-}
-
-extension PushEnvelope.ApsEnvelope: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<PushEnvelope.ApsEnvelope> {
-    return curry(PushEnvelope.ApsEnvelope.init)
-      <^> json <| "alert"
-  }
-}
-
-extension PushEnvelope.Message: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<PushEnvelope.Message> {
-    return curry(PushEnvelope.Message.init)
-      <^> json <| "message_thread_id"
-      <*> json <| "project_id"
-  }
-}
-
-extension PushEnvelope.Project: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<PushEnvelope.Project> {
-    return curry(PushEnvelope.Project.init)
-      <^> json <| "id"
-      <*> json <|? "photo"
-  }
-}
-
-extension PushEnvelope.Survey: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<PushEnvelope.Survey> {
-    return curry(PushEnvelope.Survey.init)
-      <^> json <| "id"
-      <*> json <| "project_id"
-  }
-}
-
-extension PushEnvelope.Update: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<PushEnvelope.Update> {
-    return curry(PushEnvelope.Update.init)
-      <^> json <| "id"
-      <*> json <| "project_id"
-  }
-}
-
-// MARK: - Swift decodable
-
-extension PushEnvelope: Swift.Decodable {
+extension PushEnvelope: Decodable {
   private enum CodingKeys: String, CodingKey {
     case update, post, activity, aps, message, project, survey
     case forCreator = "for_creator"
@@ -137,7 +65,7 @@ extension PushEnvelope: Swift.Decodable {
   }
 }
 
-extension PushEnvelope.Activity: Swift.Decodable {
+extension PushEnvelope.Activity: Decodable {
   private enum CodingKeys: String, CodingKey {
     case id, category
     case commentId = "comment_id"
@@ -148,21 +76,21 @@ extension PushEnvelope.Activity: Swift.Decodable {
   }
 }
 
-extension PushEnvelope.Message: Swift.Decodable {
+extension PushEnvelope.Message: Decodable {
   private enum CodingKeys: String, CodingKey {
     case projectId = "project_id"
     case messageThreadId = "message_thread_id"
   }
 }
 
-extension PushEnvelope.Survey: Swift.Decodable {
+extension PushEnvelope.Survey: Decodable {
   private enum CodingKeys: String, CodingKey {
     case projectId = "project_id"
     case id
   }
 }
 
-extension PushEnvelope.Update: Swift.Decodable {
+extension PushEnvelope.Update: Decodable {
   private enum CodingKeys: String, CodingKey {
     case projectId = "project_id"
     case id
