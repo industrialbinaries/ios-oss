@@ -2,8 +2,8 @@
 import XCTest
 
 final class AuthorTests: XCTestCase {
-  func testJSONParsing_WithCompleteData() {
-    let author = Author.decodeJSONDictionary([
+  func testJSONParsing_WithCompleteData() throws {
+    let author = try Author.decodeJSON([
       "id": 382_491_714,
       "name": "Nino Teixeira",
       "avatar": [
@@ -19,10 +19,12 @@ final class AuthorTests: XCTestCase {
           "user": "https://api-staging.kickstarter.com/v1/users/382491714"
         ]
       ]
-    ])
+      ]).get()
 
-    XCTAssertNil(author.error)
-    XCTAssertEqual(382_491_714, author.value?.id)
+    XCTAssertEqual(382_491_714, author.id)
+    XCTAssertEqual("Nino Teixeira", author.name)
+    XCTAssertEqual("https://ksr-qa-ugc.imgix.net/small.jpg", author.avatar.small)
+    XCTAssertEqual("https://staging.kickstarter.com/profile/382491714", author.urls.web)
   }
 
   func testJSONParsing_WithIncompleteData() {
