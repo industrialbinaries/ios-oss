@@ -349,7 +349,7 @@ public final class AppDelegateViewModel: AppDelegateViewModelType, AppDelegateVi
       .switchMap { rawParams -> SignalProducer<DiscoveryParams?, Never> in
         guard
           let rawParams = rawParams,
-          let params = DiscoveryParams.decode(.init(rawParams)).value
+          let params = try? DiscoveryParams.decodeJSON(rawParams).get()
         else { return .init(value: nil) }
 
         guard

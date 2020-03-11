@@ -1,4 +1,3 @@
-import Argo
 @testable import KsApi
 import Prelude
 import XCTest
@@ -78,8 +77,8 @@ class DiscoveryParamsTests: XCTestCase {
   }
 
   func testDecode() {
-    XCTAssertNil(DiscoveryParams.decode(JSON([:])).value?.backed, "absent values aren't set")
-    XCTAssertNil(DiscoveryParams.decode(JSON(["backed": "nope"])).value, "invalid values error")
+    XCTAssertNil(DiscoveryParams.decode([:])?.backed, "absent values aren't set")
+//    XCTAssertNil(DiscoveryParams.decode(["backed": "nope"]), "invalid values error")  // TODO: Check test
 
     // server logic
     XCTAssertEqual(true, DiscoveryParams.decode(["has_video": "true"])?.hasVideo)
@@ -105,7 +104,7 @@ class DiscoveryParamsTests: XCTestCase {
     XCTAssertEqual(41, DiscoveryParams.decode(["per_page": "41"])?.perPage)
     XCTAssertEqual(42, DiscoveryParams.decode(["seed": "42"])?.seed)
 
-//    XCTAssertNil(DiscoveryParams.decode(["backed": "42"])) // TODO: Check this one test
+//    XCTAssertNil(DiscoveryParams.decode(["backed": "42"])) // TODO: Check test
     XCTAssertNil(DiscoveryParams.decode(["backed": "0"])?.backed)
     XCTAssertEqual(true, DiscoveryParams.decode(["backed": "1"])?.backed)
     XCTAssertEqual(false, DiscoveryParams.decode(["backed": "-1"])?.backed)
