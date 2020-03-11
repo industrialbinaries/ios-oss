@@ -307,11 +307,11 @@ public struct Service: ServiceType {
   }
 
   public func fetchProjects(member: Bool) -> SignalProducer<ProjectsEnvelope, ErrorEnvelope> {
-    return request(.projects(member: member))
+    return request(route: .projects(member: member))
   }
 
   public func fetchProjects(paginationUrl url: String) -> SignalProducer<ProjectsEnvelope, ErrorEnvelope> {
-    return requestPagination(url)
+    return requestPagination(url: url)
   }
 
   public func fetchProjectStats(projectId: Int) ->
@@ -329,12 +329,12 @@ public struct Service: ServiceType {
   }
 
   public func fetchUserProjectsBacked() -> SignalProducer<ProjectsEnvelope, ErrorEnvelope> {
-    return request(.userProjectsBacked)
+    return request(route: .userProjectsBacked)
   }
 
   public func fetchUserProjectsBacked(paginationUrl url: String)
     -> SignalProducer<ProjectsEnvelope, ErrorEnvelope> {
-    return requestPagination(url)
+    return requestPagination(url: url)
   }
 
   public func fetchUserSelf() -> SignalProducer<User, ErrorEnvelope> {
