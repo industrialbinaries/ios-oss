@@ -209,12 +209,12 @@ public struct Service: ServiceType {
 
   public func fetchDiscovery(paginationUrl: String)
     -> SignalProducer<DiscoveryEnvelope, ErrorEnvelope> {
-    return requestPagination(paginationUrl)
+    return requestPagination(url: paginationUrl)
   }
 
   public func fetchDiscovery(params: DiscoveryParams)
     -> SignalProducer<DiscoveryEnvelope, ErrorEnvelope> {
-    return request(.discover(params))
+    return request(route: .discover(params))
   }
 
   public func fetchFriends() -> SignalProducer<FindFriendsEnvelope, ErrorEnvelope> {
@@ -285,7 +285,7 @@ public struct Service: ServiceType {
   }
 
   public func fetchProject(_ params: DiscoveryParams) -> SignalProducer<DiscoveryEnvelope, ErrorEnvelope> {
-    return request(.discover(params |> DiscoveryParams.lens.perPage .~ 1))
+    return request(route: .discover(params |> DiscoveryParams.lens.perPage .~ 1))
   }
 
   public func fetchProject(project: Project) -> SignalProducer<Project, ErrorEnvelope> {
