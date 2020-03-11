@@ -883,7 +883,6 @@
 		D01588F71EEB2ED7006E7684 /* Param.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01587D41EEB2ED7006E7684 /* Param.swift */; };
 		D01588F91EEB2ED7006E7684 /* Project.Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01587D51EEB2ED7006E7684 /* Project.Country.swift */; };
 		D01588FF1EEB2ED7006E7684 /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01587D81EEB2ED7006E7684 /* Project.swift */; };
-		D01589011EEB2ED7006E7684 /* Project.Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01587D91EEB2ED7006E7684 /* Project.Video.swift */; };
 		D01589051EEB2ED7006E7684 /* ProjectActivityEnvelope.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01587DB1EEB2ED7006E7684 /* ProjectActivityEnvelope.swift */; };
 		D01589071EEB2ED7006E7684 /* ProjectNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01587DC1EEB2ED7006E7684 /* ProjectNotification.swift */; };
 		D01589091EEB2ED7006E7684 /* ProjectsEnvelope.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01587DD1EEB2ED7006E7684 /* ProjectsEnvelope.swift */; };
@@ -1073,7 +1072,6 @@
 		D0D10C111EEB4550005EBAD0 /* MessageThreadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01587D31EEB2ED7006E7684 /* MessageThreadTests.swift */; };
 		D0D10C121EEB4550005EBAD0 /* Project.CountryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01587D61EEB2ED7006E7684 /* Project.CountryTests.swift */; };
 		D0D10C131EEB4550005EBAD0 /* Project.PhotoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01587D71EEB2ED7006E7684 /* Project.PhotoTests.swift */; };
-		D0D10C141EEB4550005EBAD0 /* Project.VideoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01587DA1EEB2ED7006E7684 /* Project.VideoTests.swift */; };
 		D0D10C151EEB4550005EBAD0 /* ProjectStatsEnvelopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01587DF1EEB2ED7006E7684 /* ProjectStatsEnvelopeTests.swift */; };
 		D0D10C161EEB4550005EBAD0 /* ProjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01587E01EEB2ED7006E7684 /* ProjectTests.swift */; };
 		D0D10C171EEB4550005EBAD0 /* PushEnvelopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01587E21EEB2ED7006E7684 /* PushEnvelopeTests.swift */; };
@@ -2305,8 +2303,6 @@
 		D01587D61EEB2ED7006E7684 /* Project.CountryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project.CountryTests.swift; sourceTree = "<group>"; };
 		D01587D71EEB2ED7006E7684 /* Project.PhotoTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project.PhotoTests.swift; sourceTree = "<group>"; };
 		D01587D81EEB2ED7006E7684 /* Project.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project.swift; sourceTree = "<group>"; };
-		D01587D91EEB2ED7006E7684 /* Project.Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project.Video.swift; sourceTree = "<group>"; };
-		D01587DA1EEB2ED7006E7684 /* Project.VideoTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project.VideoTests.swift; sourceTree = "<group>"; };
 		D01587DB1EEB2ED7006E7684 /* ProjectActivityEnvelope.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectActivityEnvelope.swift; sourceTree = "<group>"; };
 		D01587DC1EEB2ED7006E7684 /* ProjectNotification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectNotification.swift; sourceTree = "<group>"; };
 		D01587DD1EEB2ED7006E7684 /* ProjectsEnvelope.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectsEnvelope.swift; sourceTree = "<group>"; };
@@ -4014,8 +4010,6 @@
 				D01587D61EEB2ED7006E7684 /* Project.CountryTests.swift */,
 				D01587D71EEB2ED7006E7684 /* Project.PhotoTests.swift */,
 				D01587D81EEB2ED7006E7684 /* Project.swift */,
-				D01587D91EEB2ED7006E7684 /* Project.Video.swift */,
-				D01587DA1EEB2ED7006E7684 /* Project.VideoTests.swift */,
 				D01587DB1EEB2ED7006E7684 /* ProjectActivityEnvelope.swift */,
 				A4D699652418E58700298202 /* ProjectActivityEnvelopeTests.swift */,
 				D01587DC1EEB2ED7006E7684 /* ProjectNotification.swift */,
@@ -5782,7 +5776,6 @@
 				D6DC652F21768502008CF69C /* Queryable.swift in Sources */,
 				D0158A2C1EEB30A2006E7684 /* UpdatePledgeEnvelopeTemplates.swift in Sources */,
 				D015889D1EEB2ED7006E7684 /* LocationLenses.swift in Sources */,
-				D01589011EEB2ED7006E7684 /* Project.Video.swift in Sources */,
 				D0E78C3622A980A600AAB645 /* ClearUserUnseenActivityEnvelope.swift in Sources */,
 				D0158A1A1EEB30A2006E7684 /* Project.PhotoTemplates.swift in Sources */,
 				8AF34C722342CBAD000B211D /* UpdateBackingMutation.swift in Sources */,
@@ -5843,7 +5836,6 @@
 				A4D699662418E58700298202 /* ProjectActivityEnvelopeTests.swift in Sources */,
 				8AF34C7A2342D864000B211D /* Encodable+DictionaryTests.swift in Sources */,
 				D0D10C0C1EEB4550005EBAD0 /* FindFriendsEnvelopeTests.swift in Sources */,
-				D0D10C141EEB4550005EBAD0 /* Project.VideoTests.swift in Sources */,
 				D0D10C181EEB4550005EBAD0 /* RewardsItemTests.swift in Sources */,
 				8AF34C7F2343C3EF000B211D /* UpdateBackingEnvelopeTests.swift in Sources */,
 				D0D10C131EEB4550005EBAD0 /* Project.PhotoTests.swift in Sources */,
