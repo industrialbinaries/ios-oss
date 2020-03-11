@@ -178,12 +178,12 @@ public struct Service: ServiceType {
       .success,
       .update
     ]
-    return request(.activities(categories: categories, count: count))
+    return request(route: .activities(categories: categories, count: count))
   }
 
   public func fetchActivities(paginationUrl: String)
     -> SignalProducer<ActivityEnvelope, ErrorEnvelope> {
-    return requestPagination(paginationUrl)
+    return requestPagination(url: paginationUrl)
   }
 
   public func fetchBacking(forProject project: Project, forUser user: User)
