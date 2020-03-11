@@ -419,11 +419,11 @@ public struct Service: ServiceType {
 
   public func postComment(_ body: String, toProject project: Project) ->
     SignalProducer<Comment, ErrorEnvelope> {
-    return request(.postProjectComment(project, body: body))
+    return request(route: .postProjectComment(project, body: body))
   }
 
   public func postComment(_ body: String, toUpdate update: Update) -> SignalProducer<Comment, ErrorEnvelope> {
-    return request(.postUpdateComment(update, body: body))
+    return request(route: .postUpdateComment(update, body: body))
   }
 
   public func publish(draft: UpdateDraft) -> SignalProducer<Update, ErrorEnvelope> {

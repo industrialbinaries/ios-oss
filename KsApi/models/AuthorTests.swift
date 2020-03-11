@@ -1,7 +1,7 @@
 @testable import KsApi
 import XCTest
 
-final class CommentTests: XCTestCase {
+final class AuthorTests: XCTestCase {
   func testJSONParsing_WithCompleteData() {
     let author = Author.decodeJSONDictionary([
       "id": 382_491_714,
@@ -26,7 +26,7 @@ final class CommentTests: XCTestCase {
   }
 
   func testJSONParsing_WithIncompleteData() {
-    let author = Comment.decodeJSONDictionary([
+    let author = Author.decodeJSON([
       "id": 1,
       "name": "Blob",
       "avatar": [
@@ -34,8 +34,12 @@ final class CommentTests: XCTestCase {
         "small": "http://www.kickstarter.com/small.jpg"
       ]
     ])
-    XCTAssertNil(author.value)
-    XCTAssertNotNil(author.error)
+
+    guard case let .failure(error) = author else {
+      XCTFail("Unexpected state")
+      return
+    }
+    XCTAssertNotNil(error)
   }
 
   func testJSONParsing_SwiftDecoder() {
