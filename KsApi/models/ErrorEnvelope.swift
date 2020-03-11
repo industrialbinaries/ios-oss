@@ -182,3 +182,55 @@ private func concatSuccesses<A>(_ decodeds: [Decoded<[A]>]) -> Decoded<[A]> {
     .success((accum.value ?? []) + (decoded.value ?? []))
   }
 }
+
+// MARK: - Swift decodable
+
+extension ErrorEnvelope.FacebookUser: Swift.Decodable {}
+
+extension ErrorEnvelope.KsrCode: Swift.Decodable {
+  public init(from decoder: Decoder) throws {
+    guard
+      let container = try? decoder.singleValueContainer(),
+      let code = try? container.decode(String.self)
+      else {
+        self = ErrorEnvelope.KsrCode.UnknownCode
+        return
+    }
+    self =  ErrorEnvelope.KsrCode(rawValue: code) ?? ErrorEnvelope.KsrCode.UnknownCode
+  }
+}
+
+extension ErrorEnvelope.Exception: Swift.Decodable {}
+
+extension ErrorEnvelope: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case errorMessages = "error_messages"
+    case ksrCode = "ksr_code"
+    case httpCode = "http_code"
+    case exception = "exception"
+    case facebookUser = "facebook_user"
+    case status
+    case data
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    do {
+      httpCode = try container.decode(.httpCode)
+      errorMessages = container.decodeArray(.errorMessages)
+      ksrCode = container.decodeOptional(.ksrCode)
+      exception = container.decodeOptional(.exception)
+      facebookUser = container.decodeOptional(.facebookUser)
+    } catch {
+
+      let data: [String: [String: [String]]]? = container.decodeOptional(.data)
+      let amount = data?["errors"]?["amount"] ?? []
+      let backerReward = data?["errors"]?["backer_reward"] ?? []
+      errorMessages = amount + backerReward
+      ksrCode = ErrorEnvelope.KsrCode.UnknownCode
+      httpCode = try container.decode(.status)
+      exception = nil
+      facebookUser = nil
+    }
+  }
+}
