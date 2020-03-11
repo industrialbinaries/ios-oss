@@ -1,7 +1,5 @@
-import Argo
-import Curry
+import Foundation
 import Prelude
-import Runes
 
 public struct Reward {
   public let backersCount: Int?
@@ -23,7 +21,7 @@ public struct Reward {
     return self.id == Reward.noReward.id
   }
 
-  public struct Shipping: Swift.Decodable {
+  public struct Shipping {
     public let enabled: Bool
     public let location: Location?
     public let preference: Preference?
@@ -67,28 +65,13 @@ public func < (lhs: Reward, rhs: Reward) -> Bool {
   return minimumAndIdComparator.isOrdered(lhs, rhs)
 }
 
-extension Reward: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Reward> {
-    let tmp1 = curry(Reward.init)
-      <^> json <|? "backers_count"
-      <*> json <| "converted_minimum"
-      <*> (json <| "description" <|> json <| "reward")
-      <*> json <|? "ends_at"
-      <*> json <|? "estimated_delivery_on"
-    let tmp2 = tmp1
-      <*> json <| "id"
-      <*> json <|? "limit"
-      <*> json <| "minimum"
-      <*> json <|? "remaining"
-    return tmp2
-      <*> ((json <|| "rewards_items") <|> .success([]))
-      <*> tryDecodable(json)
-      <*> json <|? "starts_at"
-      <*> json <|? "title"
+extension Reward: GraphIDBridging {
+  public static var modelName: String {
+    return "Reward"
   }
 }
 
-extension Reward.Shipping {
+extension Reward.Shipping: Decodable {
   private enum CodingKeys: String, CodingKey {
     case enabled = "shipping_enabled"
     case location = "shipping_single_location"
@@ -108,13 +91,7 @@ extension Reward.Shipping {
   }
 }
 
-extension Reward: GraphIDBridging {
-  public static var modelName: String {
-    return "Reward"
-  }
-}
-
-extension Reward: Swift.Decodable {
+extension Reward: Decodable {
   private enum CodingKeys: String, CodingKey {
     case id, description, reward, limit, minimum, remaining, title
     case backersCount = "backers_count"
