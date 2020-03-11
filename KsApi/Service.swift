@@ -188,7 +188,7 @@ public struct Service: ServiceType {
 
   public func fetchBacking(forProject project: Project, forUser user: User)
     -> SignalProducer<Backing, ErrorEnvelope> {
-    return request(.backing(projectId: project.id, backerId: user.id))
+    return request(route: .backing(projectId: project.id, backerId: user.id))
   }
 
   public func fetchComments(paginationUrl url: String) -> SignalProducer<CommentsEnvelope, ErrorEnvelope> {
@@ -364,7 +364,7 @@ public struct Service: ServiceType {
 
   public func backingUpdate(forProject project: Project, forUser user: User, received: Bool) ->
     SignalProducer<Backing, ErrorEnvelope> {
-    return request(.backingUpdate(projectId: project.id, backerId: user.id, received: received))
+    return request(route: .backingUpdate(projectId: project.id, backerId: user.id, received: received))
   }
 
   public func followAllFriends() -> SignalProducer<VoidEnvelope, ErrorEnvelope> {
