@@ -1,7 +1,4 @@
-import Argo
-import Curry
 import Foundation
-import Runes
 
 public struct Activity {
   public let category: Activity.Category
@@ -50,49 +47,7 @@ public func == (lhs: Activity, rhs: Activity) -> Bool {
   return lhs.id == rhs.id
 }
 
-extension Activity: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Activity> {
-    let tmp = curry(Activity.init)
-      <^> json <| "category"
-      <*> json <|? "comment"
-      <*> json <| "created_at"
-      <*> json <| "id"
-    return tmp
-      <*> Activity.MemberData.decode(json)
-      <*> json <|? "project"
-      <*> json <|? "update"
-      <*> json <|? "user"
-  }
-}
-
-extension Activity.Category: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Activity.Category> {
-    switch json {
-    case let .string(category):
-      return .success(Activity.Category(rawValue: category) ?? .unknown)
-    default:
-      return .failure(.typeMismatch(expected: "String", actual: json.description))
-    }
-  }
-}
-
-extension Activity.MemberData: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Activity.MemberData> {
-    let tmp = curry(Activity.MemberData.init)
-      <^> json <|? "amount"
-      <*> json <|? "backing"
-      <*> json <|? "old_amount"
-      <*> json <|? "old_reward_id"
-    return tmp
-      <*> json <|? "new_amount"
-      <*> json <|? "new_reward_id"
-      <*> json <|? "reward_id"
-  }
-}
-
-// MARK: - Swift decodable
-
-extension Activity: Swift.Decodable {
+extension Activity: Decodable {
   private enum CodingKeys: String, CodingKey {
     case category, comment, id, project, update, user
     case createdAt = "created_at"
@@ -114,9 +69,9 @@ extension Activity: Swift.Decodable {
   }
 }
 
-extension Activity.Category: Swift.Decodable {}
+extension Activity.Category: Decodable {}
 
-extension Activity.MemberData: Swift.Decodable {
+extension Activity.MemberData: Decodable {
   private enum CodingKeys: String, CodingKey {
     case oldAmount = "old_amount"
     case oldRewardId = "old_reward_id"
