@@ -325,7 +325,7 @@ public struct Service: ServiceType {
   }
 
   public func fetchSurveyResponse(surveyResponseId id: Int) -> SignalProducer<SurveyResponse, ErrorEnvelope> {
-    return request(.surveyResponse(surveyResponseId: id))
+    return request(route: .surveyResponse(surveyResponseId: id))
   }
 
   public func fetchUserProjectsBacked() -> SignalProducer<ProjectsEnvelope, ErrorEnvelope> {
@@ -359,7 +359,7 @@ public struct Service: ServiceType {
   }
 
   public func fetchUnansweredSurveyResponses() -> SignalProducer<[SurveyResponse], ErrorEnvelope> {
-    return request(.unansweredSurveyResponses)
+    return request(route: .unansweredSurveyResponses)
   }
 
   public func backingUpdate(forProject project: Project, forUser user: User, received: Bool) ->
