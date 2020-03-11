@@ -3,6 +3,7 @@ import Curry
 import Runes
 
 public struct ProjectsEnvelope {
+
   public let projects: [Project]
   public let urls: UrlsEnvelope
 
@@ -36,3 +37,23 @@ extension ProjectsEnvelope.UrlsEnvelope.ApiEnvelope: Argo.Decodable {
       <^> (json <| "more_projects" <|> .success(""))
   }
 }
+
+// MARK: - Swift decodable
+
+extension ProjectsEnvelope: Swift.Decodable {}
+
+extension ProjectsEnvelope.UrlsEnvelope: Swift.Decodable {}
+
+extension ProjectsEnvelope.UrlsEnvelope.ApiEnvelope: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case moreProjects = "more_projects"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    moreProjects = container.decodeOptional(.moreProjects)
+      ?? ""
+  }
+}
+
