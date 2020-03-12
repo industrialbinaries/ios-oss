@@ -351,7 +351,7 @@ public struct Service: ServiceType {
 
   public func fetchUpdate(updateId: Int, projectParam: Param)
     -> SignalProducer<Update, ErrorEnvelope> {
-    return request(.update(updateId: updateId, projectParam: projectParam))
+    return request(route: .update(updateId: updateId, projectParam: projectParam))
   }
 
   public func fetchUpdateDraft(forProject project: Project) -> SignalProducer<UpdateDraft, ErrorEnvelope> {
@@ -427,7 +427,7 @@ public struct Service: ServiceType {
   }
 
   public func publish(draft: UpdateDraft) -> SignalProducer<Update, ErrorEnvelope> {
-    return request(.publishUpdateDraft(draft))
+    return request(route: .publishUpdateDraft(draft))
   }
 
   public func register(pushToken: String) -> SignalProducer<VoidEnvelope, ErrorEnvelope> {

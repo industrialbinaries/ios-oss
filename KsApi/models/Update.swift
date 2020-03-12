@@ -68,3 +68,21 @@ extension Update.UrlsEnvelope.WebEnvelope: Argo.Decodable {
       <^> json <| "update"
   }
 }
+
+// MARK: - Swift decodable
+
+extension Update: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case body, id, sequence, title, urls, user, visible
+    case commentsCount = "comments_count"
+    case hasLiked = "has_liked"
+    case isPublic = "public"
+    case likesCount = "likes_count"
+    case projectId = "project_id"
+    case publishedAt = "published_at"
+  }
+}
+
+extension Update.UrlsEnvelope: Swift.Decodable {}
+
+extension Update.UrlsEnvelope.WebEnvelope: Swift.Decodable {}
