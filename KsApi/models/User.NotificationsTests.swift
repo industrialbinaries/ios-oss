@@ -2,7 +2,7 @@
 import XCTest
 
 final class NotificationsTests: XCTestCase {
-  func testJsonEncoding() {
+  func testJsonEncoding() throws {
     let json: [String: Any] = [
       "notify_of_backings": false,
       "notify_of_comments": false,
@@ -18,26 +18,25 @@ final class NotificationsTests: XCTestCase {
       "notify_mobile_of_updates": false
     ]
 
-    let notification = User.Notifications.decodeJSONDictionary(json)
+    let notification = try User.Notifications.decodeJSON(json).get()
 
-    XCTAssertNil(notification.error)
-    XCTAssertEqual(notification.value?.encode() as NSDictionary?, json as NSDictionary?)
+    XCTAssertEqual(notification.encode() as NSDictionary?, json as NSDictionary?)
 
-    XCTAssertEqual(false, notification.value?.backings)
-    XCTAssertEqual(false, notification.value?.comments)
-    XCTAssertEqual(false, notification.value?.follower)
-    XCTAssertEqual(false, notification.value?.friendActivity)
-    XCTAssertEqual(false, notification.value?.postLikes)
-    XCTAssertEqual(false, notification.value?.updates)
-    XCTAssertEqual(false, notification.value?.mobileBackings)
-    XCTAssertEqual(false, notification.value?.mobileComments)
-    XCTAssertEqual(false, notification.value?.mobileFollower)
-    XCTAssertEqual(false, notification.value?.mobileFriendActivity)
-    XCTAssertEqual(false, notification.value?.mobilePostLikes)
-    XCTAssertEqual(false, notification.value?.mobileUpdates)
+    XCTAssertEqual(false, notification.backings)
+    XCTAssertEqual(false, notification.comments)
+    XCTAssertEqual(false, notification.follower)
+    XCTAssertEqual(false, notification.friendActivity)
+    XCTAssertEqual(false, notification.postLikes)
+    XCTAssertEqual(false, notification.updates)
+    XCTAssertEqual(false, notification.mobileBackings)
+    XCTAssertEqual(false, notification.mobileComments)
+    XCTAssertEqual(false, notification.mobileFollower)
+    XCTAssertEqual(false, notification.mobileFriendActivity)
+    XCTAssertEqual(false, notification.mobilePostLikes)
+    XCTAssertEqual(false, notification.mobileUpdates)
   }
 
-  func testJsonEncoding_TrueValues() {
+  func testJsonEncoding_TrueValues() throws {
     let json: [String: Any] = [
       "notify_of_backings": true,
       "notify_of_comments": true,
@@ -53,27 +52,26 @@ final class NotificationsTests: XCTestCase {
       "notify_mobile_of_updates": true
     ]
 
-    let notification = User.Notifications.decodeJSONDictionary(json)
+    let notification = try User.Notifications.decodeJSON(json).get()
 
-    XCTAssertNil(notification.error)
-    XCTAssertEqual(notification.value?.encode() as NSDictionary?, json as NSDictionary?)
+    XCTAssertEqual(notification.encode() as NSDictionary?, json as NSDictionary?)
 
-    XCTAssertEqual(true, notification.value?.backings)
-    XCTAssertEqual(true, notification.value?.comments)
-    XCTAssertEqual(true, notification.value?.follower)
-    XCTAssertEqual(true, notification.value?.friendActivity)
-    XCTAssertEqual(true, notification.value?.postLikes)
-    XCTAssertEqual(true, notification.value?.updates)
-    XCTAssertEqual(true, notification.value?.mobileBackings)
-    XCTAssertEqual(true, notification.value?.mobileComments)
-    XCTAssertEqual(true, notification.value?.mobileFollower)
-    XCTAssertEqual(true, notification.value?.mobileFriendActivity)
-    XCTAssertEqual(true, notification.value?.mobilePostLikes)
-    XCTAssertEqual(true, notification.value?.mobileUpdates)
+    XCTAssertEqual(true, notification.backings)
+    XCTAssertEqual(true, notification.comments)
+    XCTAssertEqual(true, notification.follower)
+    XCTAssertEqual(true, notification.friendActivity)
+    XCTAssertEqual(true, notification.postLikes)
+    XCTAssertEqual(true, notification.updates)
+    XCTAssertEqual(true, notification.mobileBackings)
+    XCTAssertEqual(true, notification.mobileComments)
+    XCTAssertEqual(true, notification.mobileFollower)
+    XCTAssertEqual(true, notification.mobileFriendActivity)
+    XCTAssertEqual(true, notification.mobilePostLikes)
+    XCTAssertEqual(true, notification.mobileUpdates)
   }
 
-  func testJsonDecoding() {
-    let json = User.Notifications.decodeJSONDictionary([
+  func testJsonDecoding() throws {
+    let notifications = try User.Notifications.decodeJSON([
       "notify_of_backings": true,
       "notify_of_comments": false,
       "notify_of_follower": true,
@@ -86,13 +84,12 @@ final class NotificationsTests: XCTestCase {
       "notify_mobile_of_friend_activity": false,
       "notify_mobile_of_post_likes": true,
       "notify_mobile_of_updates": false
-    ])
+      ]).get()
 
-    let notifications = json.value
 
     XCTAssertEqual(
       notifications,
-      User.Notifications.decodeJSONDictionary(notifications?.encode() ?? [:]).value
+      try User.Notifications.decodeJSON(notifications.encode()).get()
     )
   }
 }
