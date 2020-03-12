@@ -155,7 +155,7 @@ public struct Service: ServiceType {
   }
 
   public func exportData() -> SignalProducer<VoidEnvelope, ErrorEnvelope> {
-    return request(.exportData)
+    return request(route: .exportData)
   }
 
   public func exportDataState()
@@ -196,11 +196,11 @@ public struct Service: ServiceType {
   }
 
   public func fetchComments(project: Project) -> SignalProducer<CommentsEnvelope, ErrorEnvelope> {
-    return request(.projectComments(project))
+    return request(route: .projectComments(project))
   }
 
   public func fetchComments(update: Update) -> SignalProducer<CommentsEnvelope, ErrorEnvelope> {
-    return request(.updateComments(update))
+    return request(route: .updateComments(update))
   }
 
   public func fetchConfig() -> SignalProducer<Config, ErrorEnvelope> {
@@ -368,7 +368,7 @@ public struct Service: ServiceType {
   }
 
   public func followAllFriends() -> SignalProducer<VoidEnvelope, ErrorEnvelope> {
-    return request(.followAllFriends)
+    return request(route: .followAllFriends)
   }
 
   public func followFriend(userId id: Int) -> SignalProducer<User, ErrorEnvelope> {
@@ -377,7 +377,7 @@ public struct Service: ServiceType {
 
   public func incrementVideoCompletion(forProject project: Project) ->
     SignalProducer<VoidEnvelope, ErrorEnvelope> {
-    let producer = request(.incrementVideoCompletion(project: project))
+    let producer = request(route: .incrementVideoCompletion(project: project))
       as SignalProducer<VoidEnvelope, ErrorEnvelope>
 
     return producer
@@ -391,7 +391,7 @@ public struct Service: ServiceType {
 
   public func incrementVideoStart(forProject project: Project) ->
     SignalProducer<VoidEnvelope, ErrorEnvelope> {
-    let producer = request(.incrementVideoStart(project: project))
+    let producer = request(route: .incrementVideoStart(project: project))
       as SignalProducer<VoidEnvelope, ErrorEnvelope>
 
     return producer
@@ -431,7 +431,7 @@ public struct Service: ServiceType {
   }
 
   public func register(pushToken: String) -> SignalProducer<VoidEnvelope, ErrorEnvelope> {
-    return request(.registerPushToken(pushToken))
+    return request(route: .registerPushToken(pushToken))
   }
 
   public func resetPassword(email: String) -> SignalProducer<User, ErrorEnvelope> {
@@ -475,7 +475,7 @@ public struct Service: ServiceType {
   }
 
   public func unfollowFriend(userId id: Int) -> SignalProducer<VoidEnvelope, ErrorEnvelope> {
-    return request(.unfollowFriend(userId: id))
+    return request(route: .unfollowFriend(userId: id))
   }
 
   public func updateBacking(input: UpdateBackingInput) -> SignalProducer<UpdateBackingEnvelope, GraphError> {
