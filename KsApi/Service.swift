@@ -316,7 +316,7 @@ public struct Service: ServiceType {
 
   public func fetchProjectStats(projectId: Int) ->
     SignalProducer<ProjectStatsEnvelope, ErrorEnvelope> {
-    return request(.projectStats(projectId: projectId))
+    return request(route: .projectStats(projectId: projectId))
   }
 
   public func fetchRewardShippingRules(projectId: Int, rewardId: Int)
