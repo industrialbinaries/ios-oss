@@ -1,6 +1,4 @@
-import Argo
-import Curry
-import Runes
+import Foundation
 
 public struct CreatePledgeEnvelope {
   public let checkoutUrl: String?
@@ -25,7 +23,7 @@ extension CreatePledgeEnvelope: Swift.Decodable {
   }
 }
 
-private struct CheckoutURLData: Swift.Decodable {
+private struct CheckoutURLData: Decodable {
   private enum CodingKeys: String, CodingKey {
     case checkoutUrl = "checkout_url"
     case newCheckoutUrl = "new_checkout_url"
@@ -42,20 +40,4 @@ private func stringToIntOrZero(_ string: String?) -> Int {
     Double(string).flatMap(Int.init)
     ?? Int(string)
     ?? 0
-}
-
-extension CreatePledgeEnvelope: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<CreatePledgeEnvelope> {
-    return curry(CreatePledgeEnvelope.init)
-      <^> json <|? ["data", "checkout_url"]
-      <*> json <|? ["data", "new_checkout_url"]
-      <*> ((json <| "status" >>- stringToIntOrZero) <|> (json <| "status"))
-  }
-}
-
-private func stringToIntOrZero(_ string: String) -> Decoded<Int> {
-  return
-    Double(string).flatMap(Int.init).map(Decoded.success)
-    ?? Int(string).map(Decoded.success)
-    ?? .success(0)
 }
