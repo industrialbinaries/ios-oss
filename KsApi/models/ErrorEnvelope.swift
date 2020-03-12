@@ -1,6 +1,4 @@
-import Argo
-import Curry
-import Runes
+import Foundation
 
 public struct ErrorEnvelope {
   public let errorMessages: [String]
@@ -78,20 +76,10 @@ public struct ErrorEnvelope {
   /**
    A general error that some JSON could not be decoded.
 
-   - parameter decodeError: The Argo decoding error.
+   - parameter decodeError: The decoding error.
 
    - returns: An error envelope that describes why decoding failed.
    */
-  internal static func couldNotDecodeJSON(_ decodeError: DecodeError) -> ErrorEnvelope {
-    return ErrorEnvelope(
-      errorMessages: ["Argo decoding error: \(decodeError.description)"],
-      ksrCode: .DecodingJSONFailed,
-      httpCode: 400,
-      exception: nil,
-      facebookUser: nil
-    )
-  }
-
   static func couldNotDecodeJSON(_ error: Error) -> ErrorEnvelope {
     return ErrorEnvelope(
       errorMessages: ["Swift decoding error: \(error.localizedDescription)"],
@@ -119,69 +107,6 @@ public struct ErrorEnvelope {
 }
 
 extension ErrorEnvelope: Error {}
-
-extension ErrorEnvelope: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<ErrorEnvelope> {
-    // Typically API errors come back in this form...
-    let standardErrorEnvelope = curry(ErrorEnvelope.init)
-      <^> json <|| "error_messages"
-      <*> json <|? "ksr_code"
-      <*> json <| "http_code"
-      <*> json <|? "exception"
-      <*> json <|? "facebook_user"
-
-    // ...but sometimes we make requests to the www server and JSON errors come back in a different envelope
-    let nonStandardErrorEnvelope = {
-      curry(ErrorEnvelope.init)
-        <^> concatSuccesses([
-          json <|| ["data", "errors", "amount"],
-          json <|| ["data", "errors", "backer_reward"]
-        ])
-        <*> .success(ErrorEnvelope.KsrCode.UnknownCode)
-        <*> json <| "status"
-        <*> .success(nil)
-        <*> .success(nil)
-    }
-
-    return standardErrorEnvelope <|> nonStandardErrorEnvelope()
-  }
-}
-
-extension ErrorEnvelope.Exception: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<ErrorEnvelope.Exception> {
-    return curry(ErrorEnvelope.Exception.init)
-      <^> json <||? "backtrace"
-      <*> json <|? "message"
-  }
-}
-
-extension ErrorEnvelope.KsrCode: Argo.Decodable {
-  public static func decode(_ j: JSON) -> Decoded<ErrorEnvelope.KsrCode> {
-    switch j {
-    case let .string(s):
-      return pure(ErrorEnvelope.KsrCode(rawValue: s) ?? ErrorEnvelope.KsrCode.UnknownCode)
-    default:
-      return .typeMismatch(expected: "ErrorEnvelope.KsrCode", actual: j)
-    }
-  }
-}
-
-extension ErrorEnvelope.FacebookUser: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<ErrorEnvelope.FacebookUser> {
-    return curry(ErrorEnvelope.FacebookUser.init)
-      <^> json <| "id"
-      <*> json <| "name"
-      <*> json <| "email"
-  }
-}
-
-// Concats an array of decoded arrays into a decoded array. Ignores all failed decoded values, and so
-// always returns a successfully decoded value.
-private func concatSuccesses<A>(_ decodeds: [Decoded<[A]>]) -> Decoded<[A]> {
-  return decodeds.reduce(Decoded.success([])) { accum, decoded in
-    .success((accum.value ?? []) + (decoded.value ?? []))
-  }
-}
 
 // MARK: - Swift decodable
 
