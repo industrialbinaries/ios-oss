@@ -7,7 +7,7 @@ public struct ExportDataEnvelope {
   public let state: State
   public let dataUrl: String?
 
-  public enum State: String {
+  public enum State: String, Swift.Decodable {
     case queued
     case processing
     case completed
@@ -25,3 +25,11 @@ extension ExportDataEnvelope: Argo.Decodable {
 }
 
 extension ExportDataEnvelope.State: Argo.Decodable {}
+
+extension ExportDataEnvelope: Swift.Decodable {
+  enum CodingKeys: String, CodingKey {
+    case expiresAt = "expires_at"
+    case state
+    case dataUrl = "data_url"
+  }
+}
