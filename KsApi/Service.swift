@@ -227,7 +227,7 @@ public struct Service: ServiceType {
   }
 
   public func fetchFriendStats() -> SignalProducer<FriendStatsEnvelope, ErrorEnvelope> {
-    return request(.friendStats)
+    return request(route: .friendStats)
   }
 
   public func fetchGraphCategories(query: NonEmptySet<Query>)
