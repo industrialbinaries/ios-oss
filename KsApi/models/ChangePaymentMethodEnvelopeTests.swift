@@ -2,26 +2,42 @@
 import XCTest
 
 final class ChangePaymentMethodEnvelopeTests: XCTestCase {
-  func testDecodingWithStringStatus() {
-    let decoded = ChangePaymentMethodEnvelope.decodeJSONDictionary(["status": "200"])
-    XCTAssertNil(decoded.error)
-    XCTAssertEqual(200, decoded.value?.status)
+  func testDecodingWithStringStatus() throws {
+    let decoded = try ChangePaymentMethodEnvelope
+      .decodeJSON(["status": "200"])
+      .get()
+    XCTAssertEqual(200, decoded.status)
   }
 
-  func testDecodingWithIntStatus() {
-    let decoded = ChangePaymentMethodEnvelope.decodeJSONDictionary(["status": 200])
-    XCTAssertNil(decoded.error)
-    XCTAssertEqual(200, decoded.value?.status)
+  func testDecodingWithIntStatus() throws {
+    let decoded = try ChangePaymentMethodEnvelope
+      .decodeJSON(["status": 200])
+      .get()
+    XCTAssertEqual(200, decoded.status)
   }
 
-  func testDecodingWithMissingStatus() {
-    let decoded = ChangePaymentMethodEnvelope.decodeJSONDictionary([:])
-    XCTAssertNotNil(decoded.error)
+  func testDecodingWithMissingStatus() throws {
+    let decoded = try ChangePaymentMethodEnvelope
+      .decodeJSON([:])
+      .get()
+    XCTAssertEqual(0, decoded.status)
   }
 
-  func testDecodingWithBadStatusData() {
-    let decoded = ChangePaymentMethodEnvelope.decodeJSONDictionary(["status": "bad data"])
-    XCTAssertNil(decoded.error)
-    XCTAssertEqual(0, decoded.value?.status)
+  func testDecodingWithBadStatusData() throws {
+    let decoded = try ChangePaymentMethodEnvelope
+      .decodeJSON(["status": "bad data"])
+      .get()
+    XCTAssertEqual(0, decoded.status)
+  }
+
+  func testDecodingWithNewCheckoutUrl() throws {
+    let decoded = try ChangePaymentMethodEnvelope
+      .decodeJSON([
+        "status": "400",
+        "data": ["new_checkout_url": "new"]
+      ])
+      .get()
+      XCTAssertEqual(400, decoded.status)
+      XCTAssertEqual("new", decoded.newCheckoutUrl)
   }
 }

@@ -108,7 +108,7 @@ public struct Service: ServiceType {
 
   public func changePaymentMethod(project: Project)
     -> SignalProducer<ChangePaymentMethodEnvelope, ErrorEnvelope> {
-    return request(.changePaymentMethod(project: project))
+    return request(route: .changePaymentMethod(project: project))
   }
 
   public func clearUserUnseenActivity(input: EmptyInput)
