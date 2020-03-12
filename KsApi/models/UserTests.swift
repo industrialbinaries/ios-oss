@@ -57,7 +57,7 @@ final class UserTests: XCTestCase {
     XCTAssertEqual(json as NSDictionary?, user.encode() as NSDictionary?)
   }
 
-  func testJsonEncoding() {
+  func testJsonEncoding() throws {
     let json: [String: Any] = [
       "id": 1,
       "name": "Blob",
@@ -86,9 +86,9 @@ final class UserTests: XCTestCase {
       "show_public_profile": false,
       "social": true
     ]
-    let user = User.decodeJSONDictionary(json)
+    let user = try User.decodeJSON(json).get()
 
-    XCTAssertEqual(user.value?.encode() as NSDictionary?, json as NSDictionary?)
+    XCTAssertEqual(user.encode() as NSDictionary?, json as NSDictionary?)
   }
 
   func testIsRepeatCreator() {

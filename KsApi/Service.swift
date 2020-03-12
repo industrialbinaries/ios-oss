@@ -63,7 +63,7 @@ public struct Service: ServiceType {
   }
 
   public func facebookConnect(facebookAccessToken token: String) -> SignalProducer<User, ErrorEnvelope> {
-    return request(.facebookConnect(facebookAccessToken: token))
+    return request(route: .facebookConnect(facebookAccessToken: token))
   }
 
   public func addImage(file fileURL: URL, toDraft draft: UpdateDraft)
