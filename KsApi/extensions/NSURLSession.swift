@@ -88,8 +88,9 @@ internal extension URLSession {
         guard let response = response as? HTTPURLResponse else { fatalError() }
 
         guard self.isValidResponse(response: response) else {
-          if let json = parseJSONData(data) {
-            switch decode(json) as Decoded<ErrorEnvelope> {
+          if let json = parseJSONData(data) as? [AnyHashable: Any] {
+            let errorResult = ErrorEnvelope.decodeJSON(json)
+            switch errorResult {
             case let .success(envelope):
               // Got the error envelope
               print("🔴 [KsApi] Failure \(self.sanitized(request)) \n Error - \(envelope)")
