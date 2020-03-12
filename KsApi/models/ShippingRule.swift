@@ -1,6 +1,4 @@
-import Argo
-import Curry
-import Runes
+import Foundation
 
 public struct ShippingRule {
   public let cost: Double
@@ -8,16 +6,7 @@ public struct ShippingRule {
   public let location: Location
 }
 
-extension ShippingRule: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<ShippingRule> {
-    return curry(ShippingRule.init)
-      <^> (json <| "cost" >>- stringToDouble)
-      <*> json <|? "id"
-      <*> json <| "location"
-  }
-}
-
-extension ShippingRule: Swift.Decodable {
+extension ShippingRule: Decodable {
   enum CodingKeys: String, CodingKey {
     case cost, id, location
   }
@@ -35,10 +24,6 @@ extension ShippingRule: Equatable {}
 public func == (lhs: ShippingRule, rhs: ShippingRule) -> Bool {
   // todo: change to compare id once that api is deployed
   return lhs.location == rhs.location
-}
-
-private func stringToDouble(_ string: String) -> Decoded<Double> {
-  return Double(string).map(Decoded.success) ?? .success(0)
 }
 
 private func stringToDouble(_ string: String?) -> Double {
