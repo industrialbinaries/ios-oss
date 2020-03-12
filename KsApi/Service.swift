@@ -321,7 +321,7 @@ public struct Service: ServiceType {
 
   public func fetchRewardShippingRules(projectId: Int, rewardId: Int)
     -> SignalProducer<ShippingRulesEnvelope, ErrorEnvelope> {
-    return request(.shippingRules(projectId: projectId, rewardId: rewardId))
+    return request(route: .shippingRules(projectId: projectId, rewardId: rewardId))
   }
 
   public func fetchSurveyResponse(surveyResponseId id: Int) -> SignalProducer<SurveyResponse, ErrorEnvelope> {
