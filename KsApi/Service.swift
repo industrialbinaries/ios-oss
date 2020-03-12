@@ -293,7 +293,7 @@ public struct Service: ServiceType {
   }
 
   public func fetchProjectNotifications() -> SignalProducer<[ProjectNotification], ErrorEnvelope> {
-    return request(.projectNotifications)
+    return request(route: .projectNotifications)
   }
 
   public func fetchProjectActivities(forProject project: Project) ->
@@ -508,7 +508,7 @@ public struct Service: ServiceType {
 
   public func updateProjectNotification(_ notification: ProjectNotification)
     -> SignalProducer<ProjectNotification, ErrorEnvelope> {
-    return request(.updateProjectNotification(notification: notification))
+    return request(route: .updateProjectNotification(notification: notification))
   }
 
   public func updateUserSelf(_ user: User) -> SignalProducer<User, ErrorEnvelope> {
