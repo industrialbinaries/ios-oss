@@ -442,6 +442,7 @@
 		A45ED1DE2417E1580016E285 /* StarEnvelopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A45ED1DD2417E1580016E285 /* StarEnvelopeTests.swift */; };
 		A45ED1E02417E7030016E285 /* MessageThreadEnvelopeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A45ED1DF2417E7030016E285 /* MessageThreadEnvelopeTest.swift */; };
 		A45ED1E22417E92C0016E285 /* MessageThreadsEnvelopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A45ED1E12417E92C0016E285 /* MessageThreadsEnvelopeTests.swift */; };
+		A4D699662418E58700298202 /* ProjectActivityEnvelopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4D699652418E58700298202 /* ProjectActivityEnvelopeTests.swift */; };
 		A41E8D33240EA7CB00EAF2B3 /* ExportDataEnvelopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A41E8D32240EA7CB00EAF2B3 /* ExportDataEnvelopeTests.swift */; };
 		A707BAD81CFFAB9400653B2F /* LoginIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A707BAD41CFFAB9400653B2F /* LoginIntent.swift */; };
 		A707BADA1CFFAB9400653B2F /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = A707BAD51CFFAB9400653B2F /* Notifications.swift */; };
@@ -1854,6 +1855,7 @@
 		A45ED1DD2417E1580016E285 /* StarEnvelopeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarEnvelopeTests.swift; sourceTree = "<group>"; };
 		A45ED1DF2417E7030016E285 /* MessageThreadEnvelopeTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageThreadEnvelopeTest.swift; sourceTree = "<group>"; };
 		A45ED1E12417E92C0016E285 /* MessageThreadsEnvelopeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageThreadsEnvelopeTests.swift; sourceTree = "<group>"; };
+		A4D699652418E58700298202 /* ProjectActivityEnvelopeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectActivityEnvelopeTests.swift; sourceTree = "<group>"; };
 		A41E8D32240EA7CB00EAF2B3 /* ExportDataEnvelopeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDataEnvelopeTests.swift; sourceTree = "<group>"; };
 		A707BAD31CFFAB9400653B2F /* HelpType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpType.swift; sourceTree = "<group>"; };
 		A707BAD41CFFAB9400653B2F /* LoginIntent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginIntent.swift; sourceTree = "<group>"; };
@@ -4013,6 +4015,7 @@
 				D01587D91EEB2ED7006E7684 /* Project.Video.swift */,
 				D01587DA1EEB2ED7006E7684 /* Project.VideoTests.swift */,
 				D01587DB1EEB2ED7006E7684 /* ProjectActivityEnvelope.swift */,
+				A4D699652418E58700298202 /* ProjectActivityEnvelopeTests.swift */,
 				D01587DC1EEB2ED7006E7684 /* ProjectNotification.swift */,
 				D01587DD1EEB2ED7006E7684 /* ProjectsEnvelope.swift */,
 				D01587DE1EEB2ED7006E7684 /* ProjectStatsEnvelope.swift */,
@@ -5834,6 +5837,7 @@
 				D0D10C091EEB4550005EBAD0 /* CreatePledgeEnvelopeTests.swift in Sources */,
 				D0D10C081EEB4550005EBAD0 /* ConfigTests.swift in Sources */,
 				D015899E1EEB2ED7006E7684 /* ServiceTests.swift in Sources */,
+				A4D699662418E58700298202 /* ProjectActivityEnvelopeTests.swift in Sources */,
 				8AF34C7A2342D864000B211D /* Encodable+DictionaryTests.swift in Sources */,
 				D0D10C0C1EEB4550005EBAD0 /* FindFriendsEnvelopeTests.swift in Sources */,
 				D0D10C141EEB4550005EBAD0 /* Project.VideoTests.swift in Sources */,
