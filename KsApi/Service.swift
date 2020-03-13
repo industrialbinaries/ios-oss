@@ -298,12 +298,12 @@ public struct Service: ServiceType {
 
   public func fetchProjectActivities(forProject project: Project) ->
     SignalProducer<ProjectActivityEnvelope, ErrorEnvelope> {
-    return request(.projectActivities(project))
+    return request(route: .projectActivities(project))
   }
 
   public func fetchProjectActivities(paginationUrl: String)
     -> SignalProducer<ProjectActivityEnvelope, ErrorEnvelope> {
-    return requestPagination(paginationUrl)
+    return requestPagination(url: paginationUrl)
   }
 
   public func fetchProjects(member: Bool) -> SignalProducer<ProjectsEnvelope, ErrorEnvelope> {
