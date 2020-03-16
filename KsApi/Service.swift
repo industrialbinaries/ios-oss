@@ -281,7 +281,7 @@ public struct Service: ServiceType {
   }
 
   public func fetchProject(param: Param) -> SignalProducer<Project, ErrorEnvelope> {
-    return request(.project(param))
+    return request(route: .project(param))
   }
 
   public func fetchProject(_ params: DiscoveryParams) -> SignalProducer<DiscoveryEnvelope, ErrorEnvelope> {
@@ -289,7 +289,7 @@ public struct Service: ServiceType {
   }
 
   public func fetchProject(project: Project) -> SignalProducer<Project, ErrorEnvelope> {
-    return request(.project(.id(project.id)))
+    return request(route: .project(.id(project.id)))
   }
 
   public func fetchProjectNotifications() -> SignalProducer<[ProjectNotification], ErrorEnvelope> {
@@ -414,7 +414,7 @@ public struct Service: ServiceType {
   }
 
   public func markAsRead(messageThread: MessageThread) -> SignalProducer<MessageThread, ErrorEnvelope> {
-    return request(.markAsRead(messageThread))
+    return request(route: .markAsRead(messageThread))
   }
 
   public func postComment(_ body: String, toProject project: Project) ->
