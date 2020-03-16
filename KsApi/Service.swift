@@ -272,12 +272,12 @@ public struct Service: ServiceType {
 
   public func fetchMessageThreads(mailbox: Mailbox, project: Project?)
     -> SignalProducer<MessageThreadsEnvelope, ErrorEnvelope> {
-    return request(.messageThreads(mailbox: mailbox, project: project))
+    return request(route: .messageThreads(mailbox: mailbox, project: project))
   }
 
   public func fetchMessageThreads(paginationUrl: String)
     -> SignalProducer<MessageThreadsEnvelope, ErrorEnvelope> {
-    return requestPagination(paginationUrl)
+    return requestPagination(url: paginationUrl)
   }
 
   public func fetchProject(param: Param) -> SignalProducer<Project, ErrorEnvelope> {
@@ -440,7 +440,7 @@ public struct Service: ServiceType {
 
   public func searchMessages(query: String, project: Project?)
     -> SignalProducer<MessageThreadsEnvelope, ErrorEnvelope> {
-    return request(.searchMessages(query: query, project: project))
+    return request(route: .searchMessages(query: query, project: project))
   }
 
   public func sendMessage(body: String, toSubject subject: MessageSubject)
