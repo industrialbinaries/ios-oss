@@ -445,7 +445,7 @@ public struct Service: ServiceType {
 
   public func sendMessage(body: String, toSubject subject: MessageSubject)
     -> SignalProducer<Message, ErrorEnvelope> {
-    return request(.sendMessage(body: body, messageSubject: subject))
+    return request(route: .sendMessage(body: body, messageSubject: subject))
   }
 
   public func sendVerificationEmail(input: EmptyInput) ->
