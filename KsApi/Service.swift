@@ -262,12 +262,12 @@ public struct Service: ServiceType {
 
   public func fetchMessageThread(messageThreadId: Int)
     -> SignalProducer<MessageThreadEnvelope, ErrorEnvelope> {
-    return request(.messagesForThread(messageThreadId: messageThreadId))
+    return request(route: .messagesForThread(messageThreadId: messageThreadId))
   }
 
   public func fetchMessageThread(backing: Backing)
     -> SignalProducer<MessageThreadEnvelope?, ErrorEnvelope> {
-    return request(.messagesForBacking(backing))
+    return request(route: .messagesForBacking(backing))
   }
 
   public func fetchMessageThreads(mailbox: Mailbox, project: Project?)
