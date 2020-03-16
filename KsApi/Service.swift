@@ -496,7 +496,7 @@ public struct Service: ServiceType {
     tappedReward: Bool
   ) -> SignalProducer<UpdatePledgeEnvelope, ErrorEnvelope> {
     return request(
-      .updatePledge(
+      route: .updatePledge(
         project: project,
         amount: amount,
         reward: reward,
