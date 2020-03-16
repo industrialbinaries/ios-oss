@@ -1,4 +1,3 @@
-import Argo
 import Foundation
 import Prelude
 import ReactiveExtensions
@@ -7,23 +6,7 @@ import ReactiveSwift
 extension Service {
   private static let session = URLSession(configuration: .default)
 
-  @available(*, deprecated, message: "Parse your data with Swift.Decodable `func decodeModel(_ json:)`")
-  private func decodeModel<M: Argo.Decodable>(_ json: Any) ->
-    SignalProducer<M, ErrorEnvelope> where M == M.DecodedType {
-    return SignalProducer(value: json)
-      .map { json in decode(json) as Decoded<M> }
-      .flatMap(.concat) { (decoded: Decoded<M>) -> SignalProducer<M, ErrorEnvelope> in
-        switch decoded {
-        case let .success(value):
-          return .init(value: value)
-        case let .failure(error):
-          print("Argo decoding model \(M.self) error: \(error)")
-          return .init(error: .couldNotDecodeJSON(error))
-        }
-      }
-  }
-
-  private func decodeModel<M: Swift.Decodable>(_ json: Data) ->
+  private func decodeModel<M: Decodable>(_ json: Data) ->
     SignalProducer<M, ErrorEnvelope> {
       return SignalProducer(value: json)
         .map(decode)
@@ -38,28 +21,7 @@ extension Service {
       }
   }
 
-  private func decodeModels<M: Argo.Decodable>(_ json: Any)
-    -> SignalProducer<[M], ErrorEnvelope> where M == M.DecodedType {
-    return SignalProducer(value: json)
-      .map { json in decode(json) as Decoded<[M]> }
-      .flatMap(.concat) { (decoded: Decoded<[M]>) -> SignalProducer<[M], ErrorEnvelope> in
-        switch decoded {
-        case let .success(value):
-          return .init(value: value)
-        case let .failure(error):
-          print("Argo decoding model error: \(error)")
-          return .init(error: .couldNotDecodeJSON(error))
-        }
-      }
-  }
-
-  private func decodeModel<M: Argo.Decodable>(_ json: Any) ->
-    SignalProducer<M?, ErrorEnvelope> where M == M.DecodedType {
-    return SignalProducer(value: json)
-      .map { json in decode(json) as M? }
-  }
-
-  private func decodeGraphModel<T: Swift.Decodable>(_ jsonData: Data) -> SignalProducer<T, GraphError> {
+  private func decodeGraphModel<T: Decodable>(_ jsonData: Data) -> SignalProducer<T, GraphError> {
     return SignalProducer(value: jsonData)
       .flatMap { data -> SignalProducer<T, GraphError> in
         do {
@@ -80,7 +42,7 @@ extension Service {
 
   // MARK: - Public Request Functions
 
-  func fetch<A: Swift.Decodable>(query: NonEmptySet<Query>) -> SignalProducer<A, GraphError> {
+  func fetch<A: Decodable>(query: NonEmptySet<Query>) -> SignalProducer<A, GraphError> {
     let queryString: String = Query.build(query)
 
     let request = self.preparedRequest(
@@ -93,7 +55,7 @@ extension Service {
       .flatMap(self.decodeGraphModel)
   }
 
-  func applyMutation<A: Swift.Decodable, B: GraphMutation>(mutation: B) -> SignalProducer<A, GraphError> {
+  func applyMutation<A: Decodable, B: GraphMutation>(mutation: B) -> SignalProducer<A, GraphError> {
     do {
       let request = try self.preparedGraphRequest(
         forURL: self.serverConfig.graphQLEndpointUrl,
@@ -110,18 +72,7 @@ extension Service {
     }
   }
 
-  @available(*, deprecated, message: "Parse your data with Swift.Decodable `func requestPagination(url:)`")
-  func requestPagination<M: Argo.Decodable>(_ paginationUrl: String)
-    -> SignalProducer<M, ErrorEnvelope> where M == M.DecodedType {
-    guard let paginationUrl = URL(string: paginationUrl) else {
-      return .init(error: .invalidPaginationUrl)
-    }
-
-    return Service.session.rac_JSONResponse(preparedRequest(forURL: paginationUrl))
-      .flatMap(self.decodeModel)
-  }
-
-  func requestPagination<M: Swift.Decodable>(url paginationUrl: String)
+  func requestPagination<M: Decodable>(url paginationUrl: String)
     -> SignalProducer<M, ErrorEnvelope> {
       guard let paginationUrl = URL(string: paginationUrl) else {
         return .init(error: .invalidPaginationUrl)
@@ -131,25 +82,7 @@ extension Service {
         .flatMap(self.decodeModel)
   }
 
-  @available(*, deprecated, message: "Parse your data with Swift.Decodable `func request(route:)`")
-  func request<M: Argo.Decodable>(_ route: Route)
-    -> SignalProducer<M, ErrorEnvelope> where M == M.DecodedType {
-    let properties = route.requestProperties
-
-    guard let URL = URL(string: properties.path, relativeTo: self.serverConfig.apiBaseUrl as URL) else {
-      fatalError(
-        "URL(string: \(properties.path), relativeToURL: \(self.serverConfig.apiBaseUrl)) == nil"
-      )
-    }
-
-    return Service.session.rac_JSONResponse(
-      preparedRequest(forURL: URL, method: properties.method, query: properties.query),
-      uploading: properties.file.map { ($1, $0.rawValue) }
-    )
-    .flatMap(self.decodeModel)
-  }
-
-  func request<M: Swift.Decodable>(route: Route)
+  func request<M: Decodable>(route: Route)
     -> SignalProducer<M, ErrorEnvelope> {
 
       let properties = route.requestProperties
@@ -165,36 +98,6 @@ extension Service {
         uploading: properties.file.map { ($1, $0.rawValue) }
       )
       .flatMap(self.decodeModel)
-  }
-
-  func request<M: Argo.Decodable>(_ route: Route)
-    -> SignalProducer<[M], ErrorEnvelope> where M == M.DecodedType {
-    let properties = route.requestProperties
-
-    let url = self.serverConfig.apiBaseUrl.appendingPathComponent(properties.path)
-
-    return Service.session.rac_JSONResponse(
-      preparedRequest(forURL: url, method: properties.method, query: properties.query),
-      uploading: properties.file.map { ($1, $0.rawValue) }
-    )
-    .flatMap(self.decodeModels)
-  }
-
-  func request<M: Argo.Decodable>(_ route: Route)
-    -> SignalProducer<M?, ErrorEnvelope> where M == M.DecodedType {
-    let properties = route.requestProperties
-
-    guard let URL = URL(string: properties.path, relativeTo: self.serverConfig.apiBaseUrl as URL) else {
-      fatalError(
-        "URL(string: \(properties.path), relativeToURL: \(self.serverConfig.apiBaseUrl)) == nil"
-      )
-    }
-
-    return Service.session.rac_JSONResponse(
-      preparedRequest(forURL: URL, method: properties.method, query: properties.query),
-      uploading: properties.file.map { ($1, $0.rawValue) }
-    )
-    .flatMap(self.decodeModel)
   }
 }
 
