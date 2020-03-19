@@ -1,7 +1,5 @@
-import Argo
-import Curry
+import Foundation
 import Prelude
-import Runes
 
 public struct Project {
   public var availableCardTypes: [String]?
@@ -36,22 +34,22 @@ public struct Project {
     }
   }
 
-  public struct UrlsEnvelope {
+  public struct UrlsEnvelope: Decodable {
     public var web: WebEnvelope
 
-    public struct WebEnvelope {
+    public struct WebEnvelope: Decodable {
       public var project: String
       public var updates: String?
     }
   }
 
-  public struct Video {
+  public struct Video: Decodable {
     public var id: Int
     public var high: String
     public var hls: String?
   }
 
-  public enum State: String, Argo.Decodable, CaseIterable {
+  public enum State: String, CaseIterable, Decodable {
     case canceled
     case failed
     case live
@@ -134,7 +132,7 @@ public struct Project {
     public var unreadMessagesCount: Int?
     public var unseenActivityCount: Int?
 
-    public enum Permission: String {
+    public enum Permission: String, Decodable {
       case editProject = "edit_project"
       case editFaq = "edit_faq"
       case post
@@ -182,7 +180,7 @@ public struct Project {
   public struct Photo {
     public var full: String
     public var med: String
-    public var size1024x768: String?
+    public var size1024x768: String? // TODO: Maybe needs a better name? It can contain the values for both 1024x768 and 1024x576.
     public var small: String
   }
 
@@ -213,142 +211,120 @@ extension Project: CustomDebugStringConvertible {
   }
 }
 
-extension Project: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Project> {
-    let tmp1 = curry(Project.init)
-      <^> json <||? "available_card_types"
-      <*> json <| "blurb"
-      <*> json <| "category"
-      <*> Project.Country.decode(json)
-      <*> json <| "creator"
-    let tmp2 = tmp1
-      <*> Project.MemberData.decode(json)
-      <*> Project.Dates.decode(json)
-      <*> json <| "id"
-      <*> (json <| "location" <|> .success(Location.none))
-    let tmp3 = tmp2
-      <*> json <| "name"
-      <*> Project.Personalization.decode(json)
-      <*> json <| "photo"
-      <*> json <|? "prelaunch_activated"
-      <*> (json <|| "rewards" <|> .success([]))
-      <*> json <| "slug"
-    return tmp3
-      <*> json <| "staff_pick"
-      <*> json <| "state"
-      <*> Project.Stats.decode(json)
-      <*> json <| "urls"
-      <*> json <|? "video"
-  }
-}
-
-extension Project.UrlsEnvelope: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Project.UrlsEnvelope> {
-    return curry(Project.UrlsEnvelope.init)
-      <^> json <| "web"
-  }
-}
-
-extension Project.UrlsEnvelope.WebEnvelope: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Project.UrlsEnvelope.WebEnvelope> {
-    return curry(Project.UrlsEnvelope.WebEnvelope.init)
-      <^> json <| "project"
-      <*> json <|? "updates"
-  }
-}
-
-extension Project.Stats: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Project.Stats> {
-    let tmp1 = curry(Project.Stats.init)
-      <^> json <| "backers_count"
-      <*> json <|? "comments_count"
-      <*> json <|? "converted_pledged_amount"
-      <*> json <| "currency"
-      <*> json <|? "current_currency"
-      <*> json <|? "fx_rate"
-    return tmp1
-      <*> json <| "goal"
-      <*> json <| "pledged"
-      <*> (json <| "static_usd_rate" <|> .success(1.0))
-      <*> json <|? "updates_count"
-  }
-}
-
-extension Project.MemberData: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Project.MemberData> {
-    return curry(Project.MemberData.init)
-      <^> json <|? "last_update_published_at"
-      <*> (removeUnknowns <^> (json <|| "permissions") <|> .success([]))
-      <*> json <|? "unread_messages_count"
-      <*> json <|? "unseen_activity_count"
-  }
-}
-
-extension Project.Dates: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Project.Dates> {
-    return curry(Project.Dates.init)
-      <^> json <| "deadline"
-      <*> json <|? "featured_at"
-      <*> json <| "launched_at"
-      <*> json <| "state_changed_at"
-  }
-}
-
-extension Project.Personalization: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Project.Personalization> {
-    return curry(Project.Personalization.init)
-      <^> json <|? "backing"
-      <*> json <||? "friends"
-      <*> json <|? "is_backing"
-      <*> json <|? "is_starred"
-  }
-}
-
-extension Project.Category: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Project.Category> {
-    return curry(Project.Category.init)
-      <^> json <| "id"
-      <*> json <| "name"
-      <*> json <|? "parent_id"
-      <*> json <|? "parent_name"
-  }
-}
-
-extension Project.Photo: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Project.Photo> {
-    let url1024: Decoded<String?> = ((json <| "1024x768") <|> (json <| "1024x576"))
-      // swiftlint:disable:next syntactic_sugar
-      .map(Optional<String>.init)
-      <|> .success(nil)
-
-    return curry(Project.Photo.init)
-      <^> json <| "full"
-      <*> json <| "med"
-      <*> url1024
-      <*> json <| "small"
-  }
-}
-
-extension Project.MemberData.Permission: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Project.MemberData.Permission> {
-    if case let .string(permission) = json {
-      return self.init(rawValue: permission).map(pure) ?? .success(.unknown)
-    }
-    return .success(.unknown)
-  }
-}
-
-private func removeUnknowns(_ xs: [Project.MemberData.Permission]) -> [Project.MemberData.Permission] {
-  return xs.filter { $0 != .unknown }
-}
-
-private func toInt(string: String) -> Decoded<Int> {
-  return Int(string).map(Decoded.success)
-    ?? Decoded.failure(DecodeError.custom("Couldn't decoded \"\(string)\" into Int."))
-}
-
 extension Project: GraphIDBridging {
   public static var modelName: String {
     return "Project"
+  }
+}
+
+// MARK: Decodable
+
+extension Project: Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case blurb, id, category, creator, location, name, photo, rewards, slug, state, urls, video
+    case availableCardTypes = "available_card_types"
+    case prelaunchActivated = "prelaunch_activated"
+    case staffPick = "staff_pick"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    blurb = try container.decode(.blurb)
+    id = try container.decode(.id)
+    category = try container.decode(.category)
+    name = try container.decode(.name)
+    creator = try container.decode(.creator)
+    location = container.decodeOptional(.location)
+      ?? .none
+    photo = try container.decode(.photo)
+    rewards = container.decodeArray(.rewards)
+    slug = try container.decode(.slug)
+    state = try container.decode(.state)
+    urls = try container.decode(.urls)
+    video = try container.decode(.video)
+    availableCardTypes = container.decodeOptional(.availableCardTypes)
+    prelaunchActivated = container.decodeOptional(.prelaunchActivated)
+    staffPick = try container.decode(.staffPick)
+    stats = try .init(from: decoder)
+    personalization = try .init(from: decoder)
+    country = try .init(from: decoder)
+    memberData = try .init(from: decoder)
+    dates = try .init(from: decoder)
+  }
+}
+
+
+extension Project.Category: Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case id, name
+    case parentId = "parent_id"
+    case parentName = "parent_name"
+  }
+}
+
+extension Project.Stats: Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case currency, goal, pledged
+    case backersCount = "backers_count"
+    case commentsCount = "comments_count"
+    case convertedPledgedAmount = "converted_pledged_amount"
+    case currentCurrency = "current_currency"
+    case currentCurrencyRate = "fx_rate"
+    case staticUsdRate = "static_usd_rate"
+    case updatesCount = "updates_count"
+  }
+}
+
+extension Project.Personalization: Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case backing, friends
+    case isBacking = "is_backing"
+    case isStarred = "is_starred"
+  }
+}
+
+extension Project.MemberData: Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case permissions
+    case lastUpdatePublishedAt = "last_update_published_at"
+    case unreadMessagesCount = "unread_messages_count"
+    case unseenActivityCount = "unseen_activity_count"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    lastUpdatePublishedAt = container.decodeOptional(.lastUpdatePublishedAt)
+    unreadMessagesCount = container.decodeOptional(.unreadMessagesCount)
+    unseenActivityCount = container.decodeOptional(.unseenActivityCount)
+    let permissions: [Failable<Permission>] = container.decodeArray(.permissions)
+    self.permissions = permissions
+      .compactMap { $0.value }
+      .filter { $0 != .unknown }
+  }
+}
+
+extension Project.Dates: Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case deadline
+    case featuredAt = "featured_at"
+    case launchedAt = "launched_at"
+    case stateChangedAt = "state_changed_at"
+  }
+}
+
+extension Project.Photo: Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case full, med, small
+    case url1024x768 = "1024x768"
+    case url1024x576 = "1024x576"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    full = try container.decode(.full)
+    med = try container.decode(.med)
+    small = try container.decode(.small)
+    size1024x768 = container.decodeOptional(.url1024x768)
+      ?? container.decodeOptional(.url1024x576)
   }
 }

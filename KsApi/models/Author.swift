@@ -1,15 +1,12 @@
-import Argo
-import Curry
 import Foundation
-import Runes
 
-public struct Author: Swift.Decodable {
+public struct Author: Decodable {
   public var avatar: Avatar
   public var id: Int
   public var name: String
   public var urls: Url
 
-  public struct Avatar: Swift.Decodable {
+  public struct Avatar: Decodable {
     public var medium: String?
     public var small: String
     public var thumb: String
@@ -21,7 +18,7 @@ public struct Author: Swift.Decodable {
   }
 }
 
-extension Author.Url: Swift.Decodable {
+extension Author.Url: Decodable {
   enum CodingKeys: String, CodingKey {
     case api
     case user
@@ -34,32 +31,5 @@ extension Author.Url: Swift.Decodable {
       .decode(String.self, forKey: .user)
     self.web = try values.nestedContainer(keyedBy: CodingKeys.self, forKey: .web)
       .decode(String.self, forKey: .user)
-  }
-}
-
-extension Author: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Author> {
-    return curry(Author.init)
-      <^> json <| "avatar"
-      <*> json <| "id"
-      <*> json <| "name"
-      <*> json <| "urls"
-  }
-}
-
-extension Author.Avatar: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Author.Avatar> {
-    return curry(Author.Avatar.init)
-      <^> json <|? "medium"
-      <*> json <| "small"
-      <*> json <| "thumb"
-  }
-}
-
-extension Author.Url: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Author.Url> {
-    return curry(Author.Url.init)
-      <^> json <| ["api", "user"]
-      <*> json <| ["web", "user"]
   }
 }

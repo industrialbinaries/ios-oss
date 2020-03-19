@@ -1,4 +1,3 @@
-import Foundation
 @testable import KsApi
 import Prelude
 import XCTest
@@ -14,8 +13,8 @@ final class BackingPaymentSourceTests: XCTestCase {
       "type": "VISA"
     ]
 
-    let paymentSource: Backing.PaymentSource? = Backing.PaymentSource
-      .decodeJSONDictionary(jsonDictionary).value ?? nil
+    let paymentSource: Backing.PaymentSource? = try? Backing.PaymentSource
+      .decodeJSON(jsonDictionary).get()
 
     XCTAssertEqual(paymentSource?.expirationDate, "2020-02-21")
     XCTAssertEqual(paymentSource?.id, "2")
@@ -35,8 +34,8 @@ final class BackingPaymentSourceTests: XCTestCase {
       "type": nil
     ]
 
-    let paymentSource: Backing.PaymentSource? = Backing.PaymentSource
-      .decodeJSONDictionary(jsonDictionary as [String: Any]).value ?? nil
+    let paymentSource: Backing.PaymentSource? = try? Backing.PaymentSource
+      .decodeJSON(jsonDictionary as [String: Any]).get()
 
     XCTAssertNil(paymentSource?.expirationDate)
     XCTAssertNil(paymentSource?.id)
@@ -56,8 +55,8 @@ final class BackingPaymentSourceTests: XCTestCase {
       "type": "VISA"
     ]
 
-    let paymentSource: Backing.PaymentSource? = Backing.PaymentSource
-      .decodeJSONDictionary(jsonDictionary).value ?? nil
+    let paymentSource: Backing.PaymentSource? = try? Backing.PaymentSource
+      .decodeJSON(jsonDictionary).get()
 
     XCTAssertEqual(paymentSource?.expirationDate, "2020-02-21")
     XCTAssertEqual(paymentSource?.id, "2")
@@ -77,8 +76,8 @@ final class BackingPaymentSourceTests: XCTestCase {
       "type": "VISA"
     ]
 
-    let paymentSource: Backing.PaymentSource? = Backing.PaymentSource
-      .decodeJSONDictionary(jsonDictionary).value ?? nil
+    let paymentSource: Backing.PaymentSource? = try? Backing.PaymentSource
+      .decodeJSON(jsonDictionary).get()
 
     XCTAssertEqual(paymentSource?.expirationDate, "2020-02-21")
     XCTAssertEqual(paymentSource?.id, "2")
@@ -98,8 +97,8 @@ final class BackingPaymentSourceTests: XCTestCase {
       "type": "VISA"
     ]
 
-    let paymentSource: Backing.PaymentSource? = Backing.PaymentSource
-      .decodeJSONDictionary(jsonDictionary as [String: Any]).value ?? nil
+    let paymentSource: Backing.PaymentSource? = try? Backing.PaymentSource
+      .decodeJSON(jsonDictionary as [String: Any]).get()
 
     XCTAssertNil(paymentSource)
   }

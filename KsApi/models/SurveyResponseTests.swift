@@ -1,20 +1,18 @@
-import Argo
 @testable import KsApi
 import XCTest
 
 internal final class SurveyResponseTests: XCTestCase {
-  func testJSONDecoding() {
-    let decoded = SurveyResponse.decodeJSONDictionary([
+  func testJSONDecoding() throws {
+    let decoded = try SurveyResponse.decodeJSON([
       "id": 1,
       "urls": [
         "web": [
           "survey": "http://"
         ]
       ]
-    ])
+      ]).get()
 
-    XCTAssertNil(decoded.error)
-    XCTAssertNotNil(decoded.value)
-    XCTAssertEqual(1, decoded.value?.id)
+    XCTAssertEqual(1, decoded.id)
+    XCTAssertEqual("http://", decoded.urls.web.survey)
   }
 }

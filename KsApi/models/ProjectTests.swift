@@ -50,8 +50,8 @@ final class ProjectTests: XCTestCase {
     XCTAssertNotEqual("", Project.template.debugDescription)
   }
 
-  func testJSONParsing_WithCompleteData() {
-    let project = Project.decodeJSONDictionary([
+  func testJSONParsing_WithCompleteData() throws {
+    let project = try Project.decodeJSON([
       "id": 1,
       "name": "Project",
       "blurb": "The project blurb",
@@ -106,18 +106,18 @@ final class ProjectTests: XCTestCase {
         ]
       ],
       "state": "live"
-    ])
+      ]).get()
 
-    XCTAssertNil(project.error)
-    XCTAssertEqual("US", project.value?.country.countryCode)
-    XCTAssertEqual(1, project.value?.category.id)
-    XCTAssertEqual("Art", project.value?.category.name)
-    XCTAssertEqual(5, project.value?.category.parentId)
-    XCTAssertEqual("Parent Category", project.value?.category.parentName)
+    XCTAssertEqual("US", project.country.countryCode)
+    XCTAssertEqual(1, project.category.id)
+    XCTAssertEqual("Art", project.category.name)
+    XCTAssertEqual(5, project.category.parentId)
+    XCTAssertEqual("Parent Category", project.category.parentName)
+    XCTAssertEqual("http://www.kickstarter.com/1024x768.jpg", project.photo.size1024x768)
   }
 
-  func testJSONParsing_WithMemberData() {
-    let memberData = Project.MemberData.decodeJSONDictionary([
+  func testJSONParsing_WithMemberData() throws {
+    let memberData = try Project.MemberData.decodeJSON([
       "last_update_published_at": 123_456_789,
       "permissions": [
         "edit_project",
@@ -131,20 +131,19 @@ final class ProjectTests: XCTestCase {
       ],
       "unread_messages_count": 1,
       "unseen_activity_count": 2
-    ])
+      ]).get()
 
-    XCTAssertNil(memberData.error)
-    XCTAssertEqual(123_456_789, memberData.value?.lastUpdatePublishedAt)
-    XCTAssertEqual(1, memberData.value?.unreadMessagesCount)
-    XCTAssertEqual(2, memberData.value?.unseenActivityCount)
+    XCTAssertEqual(123_456_789, memberData.lastUpdatePublishedAt)
+    XCTAssertEqual(1, memberData.unreadMessagesCount)
+    XCTAssertEqual(2, memberData.unseenActivityCount)
     XCTAssertEqual(
       [.editProject, .editFaq, .post, .comment, .viewPledges, .fulfillment],
-      memberData.value?.permissions ?? []
+      memberData.permissions
     )
   }
 
-  func testJSONParsing_WithPesonalizationData() {
-    let project = Project.decodeJSONDictionary([
+  func testJSONParsing_WithPesonalizationData() throws {
+    let project = try Project.decodeJSON([
       "id": 1,
       "name": "Project",
       "blurb": "The project blurb",
@@ -201,11 +200,20 @@ final class ProjectTests: XCTestCase {
       "state": "live",
       "is_backing": true,
       "is_starred": true
-    ])
+    ]).get()
 
-    XCTAssertNil(project.error)
-    XCTAssertEqual("US", project.value?.country.countryCode)
-    XCTAssertEqual(true, project.value?.personalization.isBacking)
+    XCTAssertEqual("US", project.country.countryCode)
+    XCTAssertEqual(true, project.personalization.isBacking)
+  }
+
+  func testJsonParsing_WithFullData() throws {
+    let video = try Project.Video.decodeJSON([
+      "id": 1,
+      "high": "kickstarter.com/video.mp4"
+      ]).get()
+
+    XCTAssertEqual(video.id, 1)
+    XCTAssertEqual(video.high, "kickstarter.com/video.mp4")
   }
 
   func testPledgedUsd() {

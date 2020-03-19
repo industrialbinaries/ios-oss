@@ -1,7 +1,5 @@
-import Argo
-import Curry
+import Foundation
 import Prelude
-import Runes
 
 public struct DiscoveryParams {
   public var backed: Bool?
@@ -23,20 +21,20 @@ public struct DiscoveryParams {
   public var state: State?
   public var tagId: TagID?
 
-  public enum State: String, Argo.Decodable {
+  public enum State: String, Decodable {
     case all
     case live
     case successful
   }
 
-  public enum Sort: String, Argo.Decodable {
+  public enum Sort: String, Decodable {
     case endingSoon = "end_date"
     case magic
     case newest
     case popular = "popularity"
   }
 
-  public enum TagID: String, Argo.Decodable {
+  public enum TagID: String, Decodable {
     case goRewardless = "518"
   }
 
@@ -98,83 +96,78 @@ extension DiscoveryParams: CustomStringConvertible, CustomDebugStringConvertible
   }
 }
 
-extension DiscoveryParams: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<DiscoveryParams> {
-    let tmp1 = curry(DiscoveryParams.init)
-      <^> ((json <|? "backed" >>- stringIntToBool) as Decoded<Bool?>)
-      <*> ((json <|? "category" >>- decodeToGraphCategory) as Decoded<Category>)
-      <*> ((json <|? "collaborated" >>- stringToBool) as Decoded<Bool?>)
-      <*> ((json <|? "created" >>- stringToBool) as Decoded<Bool?>)
-    let tmp2 = tmp1
-      <*> ((json <|? "has_video" >>- stringToBool) as Decoded<Bool?>)
-      <*> ((json <|? "include_potd" >>- stringToBool) as Decoded<Bool?>)
-      <*> ((json <|? "page" >>- stringToInt) as Decoded<Int?>)
-      <*> ((json <|? "per_page" >>- stringToInt) as Decoded<Int?>)
-    let tmp3 = tmp2
-      <*> json <|? "term"
-      <*> ((json <|? "recommended" >>- stringToBool) as Decoded<Bool?>)
-      <*> ((json <|? "seed" >>- stringToInt) as Decoded<Int?>)
-      <*> json <|? "similar_to"
-    return tmp3
-      <*> ((json <|? "social" >>- stringIntToBool) as Decoded<Bool?>)
-      <*> json <|? "sort"
-      <*> ((json <|? "staff_picks" >>- stringToBool) as Decoded<Bool?>)
-      <*> ((json <|? "starred" >>- stringIntToBool) as Decoded<Bool?>)
-      <*> json <|? "state"
-      <*> json <|? "tag_id"
+// MARK: - Decodable
+
+extension DiscoveryParams: Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case backed, category, collaborated, created, page, recommended, seed, social, sort, starred, state
+    case hasVideo = "has_video"
+    case includePOTD = "include_potd"
+    case perPage = "per_page"
+    case similarTo = "similar_to"
+    case staffPicks = "staff_picks"
+    case query = "term"
+    case tagId = "tag_id"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    backed = try stringIntToBool(container.decode(.backed))
+    category = container.decodeOptional(.category)
+      ?? Category(id: "-1", name: "Unknown Category")
+    collaborated = try stringToBool(container.decodeOptional(.collaborated))
+    hasVideo = try stringToBool(container.decode(.hasVideo))
+    includePOTD = try stringToBool(container.decode(.includePOTD))
+    page = stringToInt(container.decodeOptional(.page))
+    perPage = stringToInt(container.decodeOptional(.perPage))
+    query = container.decodeOptional(.query)
+    recommended = try stringToBool(container.decode(.recommended))
+    seed = stringToInt(container.decodeOptional(.seed))
+    similarTo = container.decodeOptional(.similarTo)
+    social = try stringIntToBool(container.decode(.social))
+    sort = container.decodeOptional(.sort)
+    staffPicks = try stringToBool(container.decode(.staffPicks))
+    starred = try stringIntToBool(container.decode(.starred))
+    state = container.decodeOptional(.state)
+    tagId = container.decodeOptional(.tagId)
   }
 }
 
-private func stringToBool(_ string: String?) -> Decoded<Bool?> {
-  guard let string = string else { return .success(nil) }
+private func stringToBool(_ string: String?) throws -> Bool? {
+  guard let string = string else { return nil }
   switch string {
   // taken from server's `value_to_boolean` function
   case "true", "1", "t", "T", "TRUE", "on", "ON":
-    return .success(true)
+    return true
   case "false", "0", "f", "F", "FALSE", "off", "OFF":
-    return .success(false)
+    return false
   default:
-    return .failure(.custom("Could not parse string into bool."))
+    throw DecoderError.underline("Could not parse string into bool.")
   }
 }
 
-private func stringToInt(_ string: String?) -> Decoded<Int?> {
-  guard let string = string else { return .success(nil) }
-  return Int(string).map(Decoded<Int?>.success) ?? .failure(.custom("Could not parse string into int."))
+private func stringToInt(_ string: String?) -> Int? {
+  guard let string = string else { return nil }
+  return
+    Double(string).flatMap(Int.init)
+      ?? Int(string)
+      ?? 0
 }
 
-private func stringIntToBool(_ string: String?) -> Decoded<Bool?> {
-  guard let string = string else { return .success(nil) }
-  return Int(string)
+enum DecoderError: Error {
+  case underline(String)
+}
+
+private func stringIntToBool(_ string: String?) throws -> Bool? {
+  guard let string = string else { return nil }
+  return try Int(string)
     .filter { $0 <= 1 && $0 >= -1 }
-    .map { .success($0 == 0 ? nil : $0 == 1) }
-    .coalesceWith(.failure(.custom("Could not parse string into bool.")))
-}
-
-private func decodeToGraphCategory(_ json: JSON?) -> Decoded<Category> {
-  guard let jsonObj = json else {
-    return .success(Category(id: "-1", name: "Unknown Category"))
-  }
-  switch jsonObj {
-  case let .object(dic):
-    let category = Category(
-      id: categoryInfo(dic)?.0 ?? "",
-      name: categoryInfo(dic)?.1 ?? ""
-    )
-    return .success(category)
-  default:
-    return .failure(DecodeError.custom("JSON should be object type"))
-  }
-}
-
-private func categoryInfo(_ json: [String: JSON]) -> (String, String)? {
-  guard let name = json["name"], let id = json["id"] else {
-    return nil
-  }
-  switch (id, name) {
-  case let (.number(id), .string(name)):
-    return ("\(id)", name)
-  default:
-    return nil
+    .map { value -> Bool in
+      if value == 0 {
+        throw DecoderError.underline("Could not parse string into bool.")
+      } else {
+        return value == 1
+      }
   }
 }

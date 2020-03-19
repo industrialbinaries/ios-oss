@@ -290,8 +290,8 @@ public final class AppDelegateViewModel: AppDelegateViewModelType, AppDelegateVi
       }
 
     let deepLinkFromNotification = self.remoteNotificationProperty.signal.skipNil()
-      .map(decode)
-      .map { $0.value }
+      .map(PushEnvelope.decodeJSON)
+      .map { try? $0.get() }
       .skipNil()
       .map(navigation(fromPushEnvelope:))
 
@@ -349,7 +349,7 @@ public final class AppDelegateViewModel: AppDelegateViewModelType, AppDelegateVi
       .switchMap { rawParams -> SignalProducer<DiscoveryParams?, Never> in
         guard
           let rawParams = rawParams,
-          let params = DiscoveryParams.decode(.init(rawParams)).value
+          let params = try? DiscoveryParams.decodeJSON(rawParams).get()
         else { return .init(value: nil) }
 
         guard

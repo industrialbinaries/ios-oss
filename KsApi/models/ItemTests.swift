@@ -1,20 +1,18 @@
 @testable import KsApi
-import Prelude
 import XCTest
 
 final class ItemTests: XCTestCase {
-  func testDecoding() {
-    let decoded = Item.decodeJSONDictionary([
+  func testDecoding() throws {
+    let item = try Item.decodeJSON([
       "description": "Hello",
       "id": 1,
       "name": "The thing",
       "project_id": 1
-    ])
+      ]).get()
 
-    XCTAssertNil(decoded.error)
-    XCTAssertEqual("Hello", decoded.value?.description)
-    XCTAssertEqual(1, decoded.value?.id)
-    XCTAssertEqual("The thing", decoded.value?.name)
-    XCTAssertEqual(1, decoded.value?.projectId)
+    XCTAssertEqual("Hello", item.description)
+    XCTAssertEqual(1, item.id)
+    XCTAssertEqual("The thing", item.name)
+    XCTAssertEqual(1, item.projectId)
   }
 }

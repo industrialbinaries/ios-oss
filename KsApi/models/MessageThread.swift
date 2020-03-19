@@ -1,6 +1,4 @@
-import Argo
-import Curry
-import Runes
+import Foundation
 
 public struct MessageThread {
   public let backing: Backing?
@@ -12,21 +10,15 @@ public struct MessageThread {
   public let unreadMessagesCount: Int
 }
 
-extension MessageThread: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<MessageThread> {
-    let tmp = curry(MessageThread.init)
-      <^> json <|? "backing"
-      <*> json <| "closed"
-      <*> json <| "id"
-      <*> json <| "last_message"
-    return tmp
-      <*> json <| "participant"
-      <*> json <| "project"
-      <*> json <| "unread_messages_count"
-  }
-}
-
 extension MessageThread: Equatable {}
 public func == (lhs: MessageThread, rhs: MessageThread) -> Bool {
   return lhs.id == rhs.id
+}
+
+extension MessageThread: Swift.Decodable {
+  private enum CodingKeys: String, CodingKey {
+    case backing, id, closed, participant, project
+    case unreadMessagesCount = "unread_messages_count"
+    case lastMessage = "last_message"
+  }
 }

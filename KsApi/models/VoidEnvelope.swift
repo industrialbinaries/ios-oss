@@ -1,9 +1,3 @@
-import Argo
+import Foundation
 
-public struct VoidEnvelope {}
-
-extension VoidEnvelope: Argo.Decodable {
-  public static func decode(_: JSON) -> Decoded<VoidEnvelope> {
-    return .success(VoidEnvelope())
-  }
-}
+public struct VoidEnvelope: Decodable {}

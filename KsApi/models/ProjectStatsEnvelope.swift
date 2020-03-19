@@ -1,6 +1,4 @@
-import Argo
-import Curry
-import Runes
+import Foundation
 
 public struct ProjectStatsEnvelope {
   public let cumulativeStats: CumulativeStats
@@ -65,26 +63,46 @@ public struct ProjectStatsEnvelope {
   }
 }
 
-extension ProjectStatsEnvelope: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<ProjectStatsEnvelope> {
-    return curry(ProjectStatsEnvelope.init)
-      <^> json <| "cumulative"
-      <*> decodedJSON(json, forKey: "funding_distribution").flatMap(decodeSuccessfulFundingStats)
-      <*> json <| "referral_aggregates"
-      <*> json <|| "referral_distribution"
-      <*> json <|| "reward_distribution"
-      <*> json <|? "video_stats"
+extension ProjectStatsEnvelope: Decodable {
+  enum CodingKeys: String, CodingKey {
+    case cumulativeStats = "cumulative"
+    case fundingDistribution = "funding_distribution"
+    case referralAggregateStats = "referral_aggregates"
+    case referralDistribution = "referral_distribution"
+    case rewardDistribution = "reward_distribution"
+    case videoStats = "video_stats"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    cumulativeStats = try container.decode(.cumulativeStats)
+    let fundingDistribution: [Failable<FundingDateStats>] = container.decodeArray(.fundingDistribution)
+    self.fundingDistribution = fundingDistribution.compactMap { $0.value }
+    referralAggregateStats = try container.decode(.referralAggregateStats)
+    referralDistribution = container.decodeArray(.referralDistribution)
+    rewardDistribution = container.decodeArray(.rewardDistribution)
+    videoStats = container.decodeOptional(.videoStats)
   }
 }
 
-extension ProjectStatsEnvelope.CumulativeStats: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<ProjectStatsEnvelope.CumulativeStats> {
-    return curry(ProjectStatsEnvelope.CumulativeStats.init)
-      <^> json <| "average_pledge"
-      <*> json <| "backers_count"
-      <*> (json <| "goal" >>- stringToIntOrZero)
-      <*> json <| "percent_raised"
-      <*> (json <| "pledged" >>- stringToIntOrZero)
+extension ProjectStatsEnvelope.CumulativeStats: Decodable {
+  enum CodingKeys: String, CodingKey {
+    case goal, pledged
+    case averagePledge = "average_pledge"
+    case backersCount = "backers_count"
+    case percentRaised = "percent_raised"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    let averagePledge: Double = try container.decode(.averagePledge)
+    self.averagePledge = Int(averagePledge)
+    backersCount = try container.decode(.backersCount)
+    goal = stringToInt(container.decodeOptional(.goal)) ?? 0
+    percentRaised = try container.decode(.percentRaised)
+    pledged = stringToInt(container.decodeOptional(.pledged)) ?? 0
   }
 }
 
@@ -94,14 +112,25 @@ public func == (lhs: ProjectStatsEnvelope.CumulativeStats, rhs: ProjectStatsEnve
   return lhs.averagePledge == rhs.averagePledge
 }
 
-extension ProjectStatsEnvelope.FundingDateStats: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<ProjectStatsEnvelope.FundingDateStats> {
-    return curry(ProjectStatsEnvelope.FundingDateStats.init)
-      <^> (json <| "backers_count" <|> .success(0))
-      <*> ((json <| "cumulative_pledged" >>- stringToIntOrZero) <|> (json <| "cumulative_pledged"))
-      <*> json <| "cumulative_backers_count"
-      <*> json <| "date"
-      <*> ((json <| "pledged" >>- stringToIntOrZero) <|> .success(0))
+extension ProjectStatsEnvelope.FundingDateStats: Decodable {
+  enum CodingKeys: String, CodingKey {
+    case date, pledged
+    case backersCount = "backers_count"
+    case cumulativePledged = "cumulative_pledged"
+    case cumulativeBackersCount = "cumulative_backers_count"
+    case referrerType = "referrer_type"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    backersCount = container.decodeOptional(.backersCount) ?? 0
+    cumulativePledged = stringToInt(container.decodeOptional(.cumulativePledged))
+      ?? container.decodeOptional(.cumulativePledged)
+      ?? 0
+    cumulativeBackersCount = try container.decode(.cumulativeBackersCount)
+    date = try container.decode(.date)
+    pledged = stringToInt(container.decodeOptional(.pledged)) ?? 0
   }
 }
 
@@ -111,12 +140,20 @@ public func == (lhs: ProjectStatsEnvelope.FundingDateStats, rhs: ProjectStatsEnv
   return lhs.date == rhs.date
 }
 
-extension ProjectStatsEnvelope.ReferralAggregateStats: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<ProjectStatsEnvelope.ReferralAggregateStats> {
-    return curry(ProjectStatsEnvelope.ReferralAggregateStats.init)
-      <^> json <| "custom"
-      <*> (json <| "external" >>- stringToDouble)
-      <*> json <| "internal"
+extension ProjectStatsEnvelope.ReferralAggregateStats: Decodable {
+  enum CodingKeys: String, CodingKey {
+    case custom, external
+    case kickstarter = "internal"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    custom = try container.decode(.custom)
+    kickstarter = stringToDouble(container.decodeOptional(.kickstarter))
+      ?? container.decodeOptional(.kickstarter)
+      ?? 0
+    external = stringToDouble(container.decodeOptional(.external)) ?? 0
   }
 }
 
@@ -130,16 +167,26 @@ public func == (
     lhs.kickstarter == rhs.kickstarter
 }
 
-extension ProjectStatsEnvelope.ReferrerStats: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<ProjectStatsEnvelope.ReferrerStats> {
-    let tmp = curry(ProjectStatsEnvelope.ReferrerStats.init)
-      <^> json <| "backers_count"
-      <*> json <| "code"
-      <*> (json <| "percentage_of_dollars" >>- stringToDouble)
-    return tmp
-      <*> (json <| "pledged" >>- stringToDouble)
-      <*> json <| "referrer_name"
-      <*> json <| "referrer_type"
+extension ProjectStatsEnvelope.ReferrerStats: Decodable {
+  enum CodingKeys: String, CodingKey {
+    case code, pledged
+    case percentageOfDollars = "percentage_of_dollars"
+    case backersCount = "backers_count"
+    case referrerName = "referrer_name"
+    case referrerType = "referrer_type"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    backersCount = try container.decode(.backersCount)
+    code = try container.decode(.code)
+    percentageOfDollars = stringToDouble(container.decodeOptional(.percentageOfDollars))
+      ?? 0
+    pledged = stringToDouble(container.decodeOptional(.pledged))
+      ?? 0
+    referrerName = try container.decode(.referrerName)
+    referrerType = try container.decode(.referrerType)
   }
 }
 
@@ -148,31 +195,38 @@ public func == (lhs: ProjectStatsEnvelope.ReferrerStats, rhs: ProjectStatsEnvelo
   return lhs.code == rhs.code
 }
 
-extension ProjectStatsEnvelope.ReferrerStats.ReferrerType: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<ProjectStatsEnvelope.ReferrerStats.ReferrerType> {
-    if case let .string(referrerType) = json {
-      switch referrerType.lowercased() {
-      case "custom":
-        return .success(.custom)
-      case "external":
-        return .success(.external)
-      case "kickstarter":
-        return .success(.internal)
-      default:
-        return .success(.unknown)
-      }
+extension ProjectStatsEnvelope.ReferrerStats.ReferrerType: Decodable {
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.singleValueContainer()
+    let value = try container.decode(String.self)
+
+    switch value.lowercased() {
+    case "custom": self = .custom
+    case "external": self = .external
+    case "kickstarter": self = .internal
+    default:
+      self = .unknown
     }
-    return .success(.unknown)
   }
 }
 
-extension ProjectStatsEnvelope.RewardStats: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<ProjectStatsEnvelope.RewardStats> {
-    return curry(ProjectStatsEnvelope.RewardStats.init)
-      <^> json <| "backers_count"
-      <*> json <| "reward_id"
-      <*> ((json <|? "minimum" >>- stringToDouble) <|> (json <|? "minimum"))
-      <*> (json <| "pledged" >>- stringToIntOrZero)
+extension ProjectStatsEnvelope.RewardStats: Decodable {
+  enum CodingKeys: String, CodingKey {
+    case minimum, pledged
+    case backersCount = "backers_count"
+    case rewardId = "reward_id"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    backersCount = try container.decode(.backersCount)
+    rewardId = try container.decode(.rewardId)
+
+    pledged = stringToInt(container.decodeOptional(.pledged))
+      ?? 0
+    minimum = stringToDouble(container.decodeOptional(.minimum))
+      ?? container.decodeOptional(.minimum)
   }
 }
 
@@ -182,13 +236,12 @@ public func == (lhs: ProjectStatsEnvelope.RewardStats, rhs: ProjectStatsEnvelope
   return lhs.rewardId == rhs.rewardId
 }
 
-extension ProjectStatsEnvelope.VideoStats: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<ProjectStatsEnvelope.VideoStats> {
-    return curry(ProjectStatsEnvelope.VideoStats.init)
-      <^> json <| "external_completions"
-      <*> json <| "external_starts"
-      <*> json <| "internal_completions"
-      <*> json <| "internal_starts"
+extension ProjectStatsEnvelope.VideoStats: Decodable {
+  enum CodingKeys: String, CodingKey {
+    case externalCompletions = "external_completions"
+    case externalStarts = "external_starts"
+    case internalCompletions = "internal_completions"
+    case internalStarts = "internal_starts"
   }
 }
 
@@ -201,40 +254,17 @@ public func == (lhs: ProjectStatsEnvelope.VideoStats, rhs: ProjectStatsEnvelope.
     lhs.internalStarts == rhs.internalStarts
 }
 
-private func decodeSuccessfulFundingStats(_ json: JSON) -> Decoded<[ProjectStatsEnvelope.FundingDateStats]> {
-  switch json {
-  case let .array(arrayJSON):
-    let decodeds = arrayJSON
-      .map(ProjectStatsEnvelope.FundingDateStats.decode)
-    let successes = catDecoded(decodeds).map(Decoded.success)
-    return sequence(successes)
-  default:
-    return .failure(.custom("Failed decoded values emitted."))
-  }
-}
-
-private func stringToIntOrZero(_ string: String) -> Decoded<Int> {
+private func stringToInt(_ string: String?) -> Int? {
+  guard let string = string else { return nil }
   return
-    Double(string).flatMap(Int.init).map(Decoded.success)
-    ?? Int(string).map(Decoded.success)
-    ?? .success(0)
+    Double(string).flatMap(Int.init)
+    ?? Int(string)
+    ?? 0
 }
 
-private func stringToInt(_ string: String?) -> Decoded<Int?> {
-  guard let string = string else { return .success(nil) }
-
+private func stringToDouble(_ string: String?) -> Double? {
+  guard let string = string else { return nil }
   return
-    Double(string).flatMap(Int.init).map(Decoded.success)
-    ?? Int(string).map(Decoded<Int?>.success)
-    ?? .failure(.custom("Could not parse string into int."))
-}
-
-private func stringToDouble(_ string: String?) -> Decoded<Double?> {
-  guard let string = string else { return .success(nil) }
-
-  return Double(string).map(Decoded<Double?>.success) ?? .success(0)
-}
-
-private func stringToDouble(_ string: String) -> Decoded<Double> {
-  return Double(string).map(Decoded.success) ?? .success(0)
+    Double(string)
+    ?? 0
 }

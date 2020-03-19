@@ -343,7 +343,11 @@ public struct AppEnvironment: AppEnvironmentType {
 
     // Try restore the current user
     if service.oauthToken != nil {
-      currentUser = data["currentUser"].flatMap(decode)
+      if let json = data["currentUser"] as? [AnyHashable: Any] {
+        currentUser = try? User.decodeJSON(json).get()
+      } else {
+        currentUser = nil
+      }
     }
 
     return Environment(

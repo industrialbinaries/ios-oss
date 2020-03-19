@@ -3,8 +3,8 @@ import Prelude
 import XCTest
 
 final class UpdateDraftTests: XCTestCase {
-  func testJSONParsing_WithCompleteData() {
-    let decoded = UpdateDraft.decodeJSONDictionary([
+  func testJSONParsing_WithCompleteData() throws {
+    let draft = try UpdateDraft.decodeJSON([
       "body": "world",
       "id": 1,
       "public": true,
@@ -19,13 +19,11 @@ final class UpdateDraftTests: XCTestCase {
       ],
       "images": [["id": 3, "thumb": "thumb.jpg", "full": "full.jpg"]],
       "video": ["id": 4, "frame": "frame.jpg", "status": "successful"]
-    ])
+      ]).get()
 
-    XCTAssertNil(decoded.error)
-    let draft = decoded.value
-    XCTAssertEqual(1, draft?.update.id)
-    XCTAssertEqual(3, draft?.images.first?.id)
-    XCTAssertEqual(4, draft?.video?.id)
+    XCTAssertEqual(1, draft.update.id)
+    XCTAssertEqual(3, draft.images.first?.id)
+    XCTAssertEqual(4, draft.video?.id)
   }
 
   func testAttachmentThumbUrl() {

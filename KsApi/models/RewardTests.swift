@@ -26,57 +26,55 @@ final class RewardTests: XCTestCase {
     XCTAssertEqual(sorted, [reward1, reward3, reward4, reward2])
   }
 
-  func testJsonParsing_WithMinimalData_AndDescription() {
-    let reward = Reward.decodeJSONDictionary([
+  func testJsonParsing_WithMinimalData_AndDescription() throws {
+    let reward = try Reward.decodeJSON([
       "id": 1,
       "minimum": 10,
       "converted_minimum": 12,
       "description": "cool stuff"
-    ])
+      ]).get()
 
-    XCTAssertNil(reward.error)
-    XCTAssertEqual(reward.value?.id, 1)
-    XCTAssertEqual(reward.value?.minimum, 10)
-    XCTAssertEqual(reward.value?.convertedMinimum, 12)
-    XCTAssertEqual(reward.value?.description, "cool stuff")
-    XCTAssertNotNil(reward.value?.shipping)
-    XCTAssertEqual(false, reward.value?.shipping.enabled)
+    XCTAssertEqual(reward.id, 1)
+    XCTAssertEqual(reward.minimum, 10)
+    XCTAssertEqual(reward.convertedMinimum, 12)
+    XCTAssertEqual(reward.description, "cool stuff")
+    XCTAssertNotNil(reward.shipping)
+    XCTAssertEqual(false, reward.shipping.enabled)
   }
 
-  func testJsonParsing_WithMinimalData_AndReward() {
-    let reward = Reward.decodeJSONDictionary([
+  func testJsonParsing_WithMinimalData_AndReward() throws {
+    let reward = try Reward.decodeJSON([
       "id": 1,
       "minimum": 10,
       "converted_minimum": 12,
       "reward": "cool stuff"
-    ])
+    ]).get()
 
-    XCTAssertNil(reward.error)
-    XCTAssertEqual(reward.value?.id, 1)
-    XCTAssertEqual(reward.value?.minimum, 10)
-    XCTAssertEqual(reward.value?.convertedMinimum, 12)
-    XCTAssertEqual(reward.value?.description, "cool stuff")
+    XCTAssertEqual(reward.id, 1)
+    XCTAssertEqual(reward.minimum, 10)
+    XCTAssertEqual(reward.convertedMinimum, 12)
+    XCTAssertEqual(reward.description, "cool stuff")
   }
 
-  func testJsonParsing_WithFullData() {
-    let reward = Reward.decodeJSONDictionary([
+  func testJsonParsing_WithFullData() throws {
+    let reward = try Reward.decodeJSON([
       "id": 1,
       "description": "Some reward",
       "minimum": 10,
       "converted_minimum": 12,
       "backers_count": 10
-    ])
+    ]).get()
 
     XCTAssertNotNil(reward)
-    XCTAssertEqual(reward.value?.id, 1)
-    XCTAssertEqual(reward.value?.description, "Some reward")
-    XCTAssertEqual(reward.value?.minimum, 10)
-    XCTAssertEqual(reward.value?.convertedMinimum, 12)
-    XCTAssertEqual(reward.value?.backersCount, 10)
+    XCTAssertEqual(reward.id, 1)
+    XCTAssertEqual(reward.description, "Some reward")
+    XCTAssertEqual(reward.minimum, 10)
+    XCTAssertEqual(reward.convertedMinimum, 12)
+    XCTAssertEqual(reward.backersCount, 10)
   }
 
-  func testJsonDecoding_WithShipping() {
-    let reward = Reward.decodeJSONDictionary([
+  func testJsonDecoding_WithShipping() throws {
+    let reward = try Reward.decodeJSON([
       "id": 1,
       "description": "Some reward",
       "minimum": 10,
@@ -85,21 +83,21 @@ final class RewardTests: XCTestCase {
       "shipping_enabled": true,
       "shipping_preference": "unrestricted",
       "shipping_summary": "Ships anywhere in the world."
-    ])
+    ]).get()
 
     XCTAssertNotNil(reward)
-    XCTAssertEqual(reward.value?.id, 1)
-    XCTAssertEqual(reward.value?.description, "Some reward")
-    XCTAssertEqual(reward.value?.minimum, 10)
-    XCTAssertEqual(reward.value?.convertedMinimum, 12)
-    XCTAssertEqual(reward.value?.backersCount, 10)
-    XCTAssertEqual(true, reward.value?.shipping.enabled)
-    XCTAssertEqual(.unrestricted, reward.value?.shipping.preference)
-    XCTAssertEqual("Ships anywhere in the world.", reward.value?.shipping.summary)
+    XCTAssertEqual(reward.id, 1)
+    XCTAssertEqual(reward.description, "Some reward")
+    XCTAssertEqual(reward.minimum, 10)
+    XCTAssertEqual(reward.convertedMinimum, 12)
+    XCTAssertEqual(reward.backersCount, 10)
+    XCTAssertEqual(true, reward.shipping.enabled)
+    XCTAssertEqual(.unrestricted, reward.shipping.preference)
+    XCTAssertEqual("Ships anywhere in the world.", reward.shipping.summary)
   }
 
-  func testJsonDecoding_WithShippingType_Anywhere() {
-    let reward = Reward.decodeJSONDictionary([
+  func testJsonDecoding_WithShippingType_Anywhere() throws {
+    let reward = try Reward.decodeJSON([
       "id": 1,
       "description": "Some reward",
       "minimum": 10,
@@ -107,20 +105,20 @@ final class RewardTests: XCTestCase {
       "backers_count": 10,
       "shipping_enabled": true,
       "shipping_type": "anywhere"
-    ])
+    ]).get()
 
     XCTAssertNotNil(reward)
-    XCTAssertEqual(reward.value?.id, 1)
-    XCTAssertEqual(reward.value?.description, "Some reward")
-    XCTAssertEqual(reward.value?.minimum, 10)
-    XCTAssertEqual(reward.value?.convertedMinimum, 12)
-    XCTAssertEqual(reward.value?.backersCount, 10)
-    XCTAssertEqual(true, reward.value?.shipping.enabled)
-    XCTAssertEqual(.anywhere, reward.value?.shipping.type)
+    XCTAssertEqual(reward.id, 1)
+    XCTAssertEqual(reward.description, "Some reward")
+    XCTAssertEqual(reward.minimum, 10)
+    XCTAssertEqual(reward.convertedMinimum, 12)
+    XCTAssertEqual(reward.backersCount, 10)
+    XCTAssertEqual(true, reward.shipping.enabled)
+    XCTAssertEqual(.anywhere, reward.shipping.type)
   }
 
-  func testJsonDecoding_WithShippingType_SingleLocation() {
-    let reward = Reward.decodeJSONDictionary([
+  func testJsonDecoding_WithShippingType_SingleLocation() throws {
+    let reward = try Reward.decodeJSON([
       "id": 1,
       "description": "Some reward",
       "minimum": 10,
@@ -132,21 +130,21 @@ final class RewardTests: XCTestCase {
         "id": 123,
         "localized_name": "United States"
       ]
-    ])
+    ]).get()
 
     XCTAssertNotNil(reward)
-    XCTAssertEqual(reward.value?.id, 1)
-    XCTAssertEqual(reward.value?.description, "Some reward")
-    XCTAssertEqual(reward.value?.minimum, 10)
-    XCTAssertEqual(reward.value?.convertedMinimum, 12)
-    XCTAssertEqual(reward.value?.backersCount, 10)
-    XCTAssertEqual(true, reward.value?.shipping.enabled)
-    XCTAssertEqual(.singleLocation, reward.value?.shipping.type)
-    XCTAssertEqual(.init(id: 123, localizedName: "United States"), reward.value?.shipping.location)
+    XCTAssertEqual(reward.id, 1)
+    XCTAssertEqual(reward.description, "Some reward")
+    XCTAssertEqual(reward.minimum, 10)
+    XCTAssertEqual(reward.convertedMinimum, 12)
+    XCTAssertEqual(reward.backersCount, 10)
+    XCTAssertEqual(true, reward.shipping.enabled)
+    XCTAssertEqual(.singleLocation, reward.shipping.type)
+    XCTAssertEqual(.init(id: 123, localizedName: "United States"), reward.shipping.location)
   }
 
-  func testJsonDecoding_WithShippingType_MultipleLocations() {
-    let reward = Reward.decodeJSONDictionary([
+  func testJsonDecoding_WithShippingType_MultipleLocations() throws {
+    let reward = try Reward.decodeJSON([
       "id": 1,
       "description": "Some reward",
       "minimum": 10,
@@ -154,20 +152,20 @@ final class RewardTests: XCTestCase {
       "backers_count": 10,
       "shipping_enabled": true,
       "shipping_type": "multiple_locations"
-    ])
+    ]).get()
 
     XCTAssertNotNil(reward)
-    XCTAssertEqual(reward.value?.id, 1)
-    XCTAssertEqual(reward.value?.description, "Some reward")
-    XCTAssertEqual(reward.value?.minimum, 10)
-    XCTAssertEqual(reward.value?.convertedMinimum, 12)
-    XCTAssertEqual(reward.value?.backersCount, 10)
-    XCTAssertEqual(true, reward.value?.shipping.enabled)
-    XCTAssertEqual(.multipleLocations, reward.value?.shipping.type)
+    XCTAssertEqual(reward.id, 1)
+    XCTAssertEqual(reward.description, "Some reward")
+    XCTAssertEqual(reward.minimum, 10)
+    XCTAssertEqual(reward.convertedMinimum, 12)
+    XCTAssertEqual(reward.backersCount, 10)
+    XCTAssertEqual(true, reward.shipping.enabled)
+    XCTAssertEqual(.multipleLocations, reward.shipping.type)
   }
 
-  func testJsonDecoding_WithShippingType_NoShipping() {
-    let reward = Reward.decodeJSONDictionary([
+  func testJsonDecoding_WithShippingType_NoShipping() throws {
+    let reward = try Reward.decodeJSON([
       "id": 1,
       "description": "Some reward",
       "minimum": 10,
@@ -175,15 +173,15 @@ final class RewardTests: XCTestCase {
       "backers_count": 10,
       "shipping_enabled": false,
       "shipping_type": "no_shipping"
-    ])
+      ]).get()
 
     XCTAssertNotNil(reward)
-    XCTAssertEqual(reward.value?.id, 1)
-    XCTAssertEqual(reward.value?.description, "Some reward")
-    XCTAssertEqual(reward.value?.minimum, 10)
-    XCTAssertEqual(reward.value?.convertedMinimum, 12)
-    XCTAssertEqual(reward.value?.backersCount, 10)
-    XCTAssertEqual(false, reward.value?.shipping.enabled)
-    XCTAssertEqual(.noShipping, reward.value?.shipping.type)
+    XCTAssertEqual(reward.id, 1)
+    XCTAssertEqual(reward.description, "Some reward")
+    XCTAssertEqual(reward.minimum, 10)
+    XCTAssertEqual(reward.convertedMinimum, 12)
+    XCTAssertEqual(reward.backersCount, 10)
+    XCTAssertEqual(false, reward.shipping.enabled)
+    XCTAssertEqual(.noShipping, reward.shipping.type)
   }
 }
